@@ -4,6 +4,7 @@ import BannerErro from './components/BannerErro.jsx'
 import ResumoCarteira from './components/ResumoCarteira.jsx'
 import FormularioAtivo from './components/FormularioAtivo.jsx'
 import ListaCarteira from './components/ListaCarteira.jsx'
+import GraficoPizza from './components/GraficoPizza.jsx'
 import { carregarCarteira, salvarCarteira } from './utils/storage.js'
 import { calcularPosicoes, calcularResumo } from './utils/calculos.js'
 import { buscarCotacoes } from './services/brapi.js'
@@ -154,6 +155,7 @@ function App() {
           <h2 className="cartao__titulo" id="titulo-grafico">
             Distribuição
           </h2>
+          <GraficoPizza posicoes={posicoes} />
         </section>
       </main>
 

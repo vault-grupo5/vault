@@ -29,16 +29,18 @@
   --cor-perda-fundo: rgba(244, 63, 94, 0.15);
 
   /* ---------- Cores das fatias do gráfico de pizza ----------
-     Começam nos roxos da paleta e depois variam o tom, pra que
-     fatias vizinhas não fiquem parecidas demais. */
-  --cor-grafico-1: #8b5cf6;
-  --cor-grafico-2: #c4b5fd;
-  --cor-grafico-3: #6d28d9;
-  --cor-grafico-4: #e879f9;
-  --cor-grafico-5: #818cf8;
-  --cor-grafico-6: #a78bfa;
-  --cor-grafico-7: #f0abfc;
-  --cor-grafico-8: #4c1d95;
+     Começa no roxo do grupo e depois MUDA DE MATIZ (água, laranja, azul...).
+     Só tons de roxo ficariam impossíveis de diferenciar, principalmente para
+     daltônicos. A ordem foi testada para que fatias vizinhas (inclusive a
+     última com a primeira, já que a pizza é um círculo) sejam bem distintas.
+     Do 7º ativo em diante, os menores viram uma fatia cinza "Outros". */
+  --cor-grafico-1: #8b5cf6; /* roxo (destaque) */
+  --cor-grafico-2: #199e70; /* água */
+  --cor-grafico-3: #d95926; /* laranja */
+  --cor-grafico-4: #3987e5; /* azul */
+  --cor-grafico-5: #c98500; /* amarelo */
+  --cor-grafico-6: #d55181; /* magenta */
+  --cor-grafico-outros: #5d5d78; /* cinza */
 
   /* ---------- Tipografia ---------- */
   --fonte: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
