@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { criarAtivo } from '../utils/ativo.js'
 import { lerNumero } from '../utils/formatacao.js'
 import { buscarCotacao } from '../services/brapi.js'
+import CampoTicker from './CampoTicker.jsx'
 import './FormularioAtivo.css'
 
 // Formato de ticker da B3: 4 letras + 1 ou 2 números (+ "F" do mercado fracionário).
@@ -21,7 +22,7 @@ function validar(valores, tickersExistentes) {
   if (!ticker) {
     erros.ticker = 'Informe o código do ativo.'
   } else if (!FORMATO_TICKER.test(ticker)) {
-    erros.ticker = 'Código inválido. Use o formato da B3, ex: PETR4.'
+    erros.ticker = 'Código inválido. Escolha uma sugestão ou use o formato da B3, ex: PETR4.'
   } else if (tickersExistentes.includes(ticker)) {
     erros.ticker = `${ticker} já está na carteira. Use o botão editar na lista.`
   }
@@ -62,6 +63,18 @@ function FormularioAtivo({ tickersExistentes, aoAdicionar }) {
     setValores((atuais) => ({ ...atuais, [name]: value }))
     // Ao corrigir o campo, o erro dele some
     if (erros[name]) setErros((atuais) => ({ ...atuais, [name]: undefined }))
+  }
+
+  // O campo do ticker (CampoTicker) entrega o texto direto, e não o evento
+  function aoMudarTicker(texto) {
+    setValores((atuais) => ({ ...atuais, ticker: texto }))
+    if (erros.ticker) setErros((atuais) => ({ ...atuais, ticker: undefined }))
+  }
+
+  // Ao escolher uma sugestão, preenchemos o ticker e já passamos para a quantidade
+  function aoEscolherSugestao(sugestao) {
+    aoMudarTicker(sugestao.ticker)
+    focarCampo('quantidade')
   }
 
   async function aoEnviar(evento) {
@@ -110,18 +123,16 @@ function FormularioAtivo({ tickersExistentes, aoAdicionar }) {
         <label className="campo__rotulo" htmlFor="campo-ticker">
           Código do ativo
         </label>
-        <input
-          ref={refTicker}
+        {/* Campo com sugestões: digite o código ou o nome da empresa (ex: PETR4 ou Petrobras) */}
+        <CampoTicker
+          inputRef={refTicker}
           id="campo-ticker"
-          name="ticker"
-          className="campo__entrada campo__entrada--ticker"
-          placeholder="PETR4"
-          autoComplete="off"
-          autoCapitalize="characters"
-          spellCheck="false"
-          maxLength={7}
-          value={valores.ticker}
-          onChange={aoMudar}
+          placeholder="PETR4 ou Petrobras"
+          maxLength={30}
+          valor={valores.ticker}
+          aoMudar={aoMudarTicker}
+          aoEscolher={aoEscolherSugestao}
+          tickersExistentes={tickersExistentes}
           {...propsDeErro('ticker')}
         />
         {erros.ticker && (

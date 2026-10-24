@@ -13,6 +13,8 @@ const TEMPO_CACHE_MS = 10 * 60 * 1000 // 10 minutos
 const CHAVE_CACHE = 'vault:cotacoes'
 const CHAVE_HISTORICOS = 'vault:historicos'
 const TEMPO_CACHE_HISTORICO_MS = 60 * 60 * 1000 // 1 hora: são candles diários, mudam pouco
+const CHAVE_BUSCAS = 'vault:buscas'
+const TEMPO_CACHE_BUSCA_MS = 24 * 60 * 60 * 1000 // 24 horas: a lista de ações quase não muda
 const PAUSA_ENTRE_TICKERS_MS = 300 // respiro entre uma requisição e outra
 const ESPERA_ANTES_DE_REPETIR_MS = 2000 // espera antes de repetir quando a API diz "limite atingido" (429)
 
@@ -37,16 +39,22 @@ function enfileirar(tarefa) {
 // Faz a requisição (dentro da fila) e devolve o JSON da resposta.
 // Se vier 429, espera um pouco e tenta de novo, uma única vez.
 // Em caso de erro, lança um Error com mensagem amigável e o código HTTP em erro.status.
-function pedirJson(url, codigo) {
+//
+// "signal" (opcional) permite cancelar: se a pessoa já digitou outra coisa, a busca antiga
+// que ainda espera na fila nem chega a ser enviada (não gasta requisição).
+function pedirJson(url, codigo, signal) {
   return enfileirar(async () => {
+    if (signal?.aborted) throw new DOMException('Busca cancelada', 'AbortError')
+
     let resposta
     try {
-      resposta = await fetch(url)
+      resposta = await fetch(url, { signal })
       if (resposta.status === 429) {
         await esperar(ESPERA_ANTES_DE_REPETIR_MS)
-        resposta = await fetch(url)
+        resposta = await fetch(url, { signal })
       }
-    } catch {
+    } catch (erro) {
+      if (erro.name === 'AbortError') throw erro // cancelamento não é "sem internet"
       throw new Error('Sem conexão com a API. Verifique sua internet.')
     }
 
@@ -162,6 +170,33 @@ export async function buscarHistorico(ticker, { ignorarCache = false } = {}) {
 
   salvarGenerico(CHAVE_HISTORICOS, codigo, historico)
   return historico
+}
+
+// Busca ações pelo código ou pelo nome (ex: "petro", "magazine", "ITUB") para as sugestões do formulário.
+// Devolve [{ ticker, nome, logo }]. O resultado fica 24 h no cache: quem digita a mesma coisa
+// de novo não gasta requisição.
+// - signal: AbortController.signal para cancelar quando a pessoa continua digitando
+export async function buscarSugestoes(termo, { signal } = {}) {
+  const busca = termo.trim().toUpperCase()
+
+  const emCache = lerDoCache(CHAVE_BUSCAS, busca, TEMPO_CACHE_BUSCA_MS)
+  if (emCache) return emCache // lista vazia também vale: "nada encontrado" é um resultado
+
+  const url = new URL(`${URL_BASE}/list`)
+  url.searchParams.set('search', busca)
+  url.searchParams.set('limit', '8')
+  if (TOKEN) url.searchParams.set('token', TOKEN)
+
+  const dados = await pedirJson(url, busca, signal)
+
+  const sugestoes = (dados.stocks ?? []).map((acao) => ({
+    ticker: acao.stock,
+    nome: acao.name,
+    logo: acao.logo,
+  }))
+
+  salvarGenerico(CHAVE_BUSCAS, busca, sugestoes, 40)
+  return sugestoes
 }
 
 // Busca vários tickers (uma requisição por ticker, por causa do plano grátis).

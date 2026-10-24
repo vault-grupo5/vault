@@ -1,0 +1,92 @@
+/* Estilos do campo de ticker com sugestões (CampoTicker.jsx) */
+
+/* position: relative → a lista de sugestões se posiciona em relação a este bloco */
+.campo-ticker {
+  position: relative;
+}
+
+.sugestoes {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 5; /* fica por cima dos campos de baixo */
+  max-height: 264px;
+  margin: 0;
+  padding: 4px;
+  overflow-y: auto;
+  list-style: none;
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-cartao);
+  box-shadow: var(--sombra);
+}
+
+/* O atributo hidden esconde a lista, mas o CSS acima definiria display; garantimos que esconde */
+.sugestoes[hidden] {
+  display: none;
+}
+
+.sugestoes--aviso {
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  color: var(--cor-texto-secundario);
+}
+
+.sugestao {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Destaque: o mouse por cima OU a seta do teclado */
+.sugestao--ativa {
+  background: var(--cor-destaque-fundo);
+}
+
+.sugestao__ticker {
+  min-width: 64px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.sugestao__nome {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.85rem;
+  color: var(--cor-texto-secundario);
+}
+
+.sugestao__etiqueta {
+  padding: 1px 8px;
+  border-radius: var(--raio-pilula);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--cor-destaque-claro);
+  background: var(--cor-destaque-fundo);
+  white-space: nowrap;
+}
+
+/* Bolinha girando no canto do campo: ainda estamos buscando mais opções na API */
+.campo-ticker__buscando {
+  position: absolute;
+  top: 13px;
+  right: 12px;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--cor-borda-forte);
+  border-top-color: var(--cor-destaque);
+  border-radius: 50%;
+  animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
