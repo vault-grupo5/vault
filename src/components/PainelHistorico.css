@@ -16,7 +16,7 @@
 
 /* ::backdrop = o fundo escurecido atrás do painel */
 .painel::backdrop {
-  background: rgba(5, 5, 10, 0.72);
+  background: var(--cor-sobreposicao, rgba(5, 5, 10, 0.72)); /* o 2º valor é reserva p/ navegadores em que ::backdrop não herda variáveis */
   backdrop-filter: blur(3px);
 }
 

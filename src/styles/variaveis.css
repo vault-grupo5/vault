@@ -16,6 +16,10 @@
   --cor-destaque: #8b5cf6;
   --cor-destaque-claro: #c4b5fd;
   --cor-destaque-fundo: rgba(139, 92, 246, 0.15); /* roxo transparente pra fundos */
+  --cor-destaque-hover: #7c4dee; /* botão principal com o mouse em cima */
+  --cor-sobre-destaque: #ffffff; /* texto escrito em cima do roxo (botão principal) */
+  --cor-aviso: #fbbf24; /* amarelo dos avisos (ex: "ativo sem cotação") */
+  --cor-sobreposicao: rgba(5, 5, 10, 0.72); /* fundo escurecido atrás do painel de histórico */
 
   /* ---------- Texto ---------- */
   --cor-texto: #f4f4f8; /* texto principal */
@@ -53,4 +57,56 @@
   --espaco: 16px; /* espaçamento padrão */
   --sombra: 0 12px 32px -12px rgba(0, 0, 0, 0.6);
   --transicao: 180ms ease; /* duração padrão das animações */
+}
+
+/*
+  TEMA CLARO
+  O tema escuro (acima) é o padrão. O tema claro só REDEFINE as variáveis de cor:
+  como todo o site usa var(--cor-...), basta trocar os valores aqui e a página inteira muda.
+  O atributo data-tema="claro" é colocado no <html> pelo script do index.html (antes da página
+  aparecer) e depois pelo hook hooks/useTema.js.
+
+  Cuidados com o contraste (o roxo e os verdes/vermelhos do tema escuro são CLAROS demais
+  para fundo branco, então aqui usamos versões mais escuras):
+  - texto secundário #5c5972 sobre branco: ~7:1
+  - destaque #7c3aed com texto branco no botão: ~5,7:1
+  - ganho #166534 e perda #be123c sobre as pílulas: ≥ 5:1
+  - cores do gráfico validadas para daltonismo e contraste ≥ 3:1 contra o branco
+  Obs.: --cor-destaque-claro significa "roxo usado em TEXTO de destaque". No tema escuro é um
+  roxo claro; no tema claro é um roxo escuro (senão sumiria no fundo branco).
+*/
+:root[data-tema='claro'] {
+  color-scheme: light;
+
+  --cor-fundo: #f5f4fa;
+  --cor-cartao: #ffffff;
+  --cor-cartao-hover: #f0eef8;
+  --cor-borda: #e3e0ef;
+  --cor-borda-forte: #c9c5dc;
+
+  --cor-destaque: #7c3aed;
+  --cor-destaque-claro: #6d28d9;
+  --cor-destaque-fundo: rgba(124, 58, 237, 0.1);
+  --cor-destaque-hover: #6d28d9;
+  --cor-aviso: #b45309;
+  --cor-sobreposicao: rgba(30, 22, 60, 0.45);
+
+  --cor-texto: #15131f;
+  --cor-texto-secundario: #5c5972;
+  --cor-centavos: #9a97b0;
+
+  --cor-ganho: #166534;
+  --cor-ganho-fundo: rgba(22, 163, 74, 0.12);
+  --cor-perda: #be123c;
+  --cor-perda-fundo: rgba(225, 29, 72, 0.1);
+
+  --cor-grafico-1: #7c3aed; /* roxo */
+  --cor-grafico-2: #14946a; /* água */
+  --cor-grafico-3: #e0561f; /* laranja */
+  --cor-grafico-4: #2a78d6; /* azul */
+  --cor-grafico-5: #b87d00; /* amarelo (escurecido para ter contraste no branco) */
+  --cor-grafico-6: #d1507e; /* magenta */
+  --cor-grafico-outros: #8e8ba3; /* cinza */
+
+  --sombra: 0 12px 32px -12px rgba(40, 30, 80, 0.2);
 }

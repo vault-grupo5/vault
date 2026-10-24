@@ -283,3 +283,14 @@
   display: block;
   margin-top: 4px;
 }
+
+/* Celulares estreitos: o botão "Atualizar" vira só o ícone, para o cabeçalho caber numa linha */
+@media (max-width: 480px) {
+  .botao__texto {
+    display: none;
+  }
+
+  .cabecalho__acoes .botao {
+    padding: 0 12px;
+  }
+}

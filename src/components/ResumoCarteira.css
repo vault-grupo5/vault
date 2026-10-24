@@ -45,7 +45,7 @@
 
 .resumo__aviso {
   font-size: 0.8rem;
-  color: #fbbf24;
+  color: var(--cor-aviso);
 }
 
 /* ---------- Indicadores menores ---------- */

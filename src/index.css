@@ -122,11 +122,11 @@ p {
 
 .botao--primario {
   background: var(--cor-destaque);
-  color: #fff;
+  color: var(--cor-sobre-destaque);
 }
 
 .botao--primario:hover:not(:disabled) {
-  background: #7c4dee;
+  background: var(--cor-destaque-hover);
 }
 
 .botao--fantasma {

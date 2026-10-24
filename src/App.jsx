@@ -7,6 +7,7 @@ import ListaCarteira from './components/ListaCarteira.jsx'
 import GraficoPizza from './components/GraficoPizza.jsx'
 import Aviso from './components/Aviso.jsx'
 import { useAtualizacaoAutomatica } from './hooks/useAtualizacaoAutomatica.js'
+import { useTema } from './hooks/useTema.js'
 import PainelHistorico from './components/PainelHistorico.jsx'
 import { carregarCarteira, salvarCarteira } from './utils/storage.js'
 import { calcularPosicoes, calcularResumo } from './utils/calculos.js'
@@ -38,6 +39,8 @@ function App() {
   const [carregando, setCarregando] = useState(ativos.length > 0)
   // Quando as cotações foram buscadas pela última vez (ms). Serve de base para a atualização automática.
   const [ultimaBusca, setUltimaBusca] = useState(null)
+  // Tema claro/escuro (ver hooks/useTema.js)
+  const { tema, alternar: alternarTema } = useTema()
   // Aviso flutuante mostrado após cadastrar, editar ou remover: { id, texto, tipo }
   const [aviso, setAviso] = useState(null)
   // Critério de ordenação da lista (lembrado entre visitas)
@@ -170,6 +173,8 @@ function App() {
       <Cabecalho
         horarioCotacao={horarioCotacao}
         atualizando={carregando}
+        tema={tema}
+        aoAlternarTema={alternarTema}
         aoAtualizar={ativos.length > 0 ? () => atualizarCotacoes({ ignorarCache: true }) : undefined}
       />
 

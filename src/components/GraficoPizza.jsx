@@ -15,7 +15,9 @@ const formatarParticipacao = (valor) => formatarPorcentagem(valor).replace('+', 
 
 const MAXIMO_DE_FATIAS = 6 // temos 6 cores; a partir do 7º ativo, os menores viram "Outros"
 
-// Monta as fatias: [{ ticker, valor, percentual, cor }]
+// Monta as fatias: [{ ticker, valor, percentual, variavelCor }]
+// variavelCor é o NOME da variável CSS da cor (ex: '--cor-grafico-2'). A cor em si é lida só na hora
+// de desenhar (veja GraficoPizza abaixo), para acompanhar o tema claro/escuro.
 // - posicoes chega na ordem da carteira (ordem de cadastro)
 // - a COR segue essa ordem, e não o tamanho: se um ativo passar outro em valor,
 //   as fatias trocam de lugar mas cada ativo continua com a sua cor
@@ -32,7 +34,7 @@ function montarFatias(posicoes) {
       ticker: `Outros (${resto.length})`,
       valor: resto.reduce((soma, f) => soma + f.valor, 0),
       percentual: resto.reduce((soma, f) => soma + f.percentual, 0),
-      cor: lerCor('--cor-grafico-outros'),
+      variavelCor: '--cor-grafico-outros',
     }
   }
 
@@ -42,7 +44,7 @@ function montarFatias(posicoes) {
 
   const fatias = principais.map((f) => ({
     ...f,
-    cor: lerCor(`--cor-grafico-${ordemDaCarteira.indexOf(f.ticker) + 1}`),
+    variavelCor: `--cor-grafico-${ordemDaCarteira.indexOf(f.ticker) + 1}`,
   }))
   return outros ? [...fatias, outros] : fatias
 }
@@ -51,7 +53,11 @@ function montarFatias(posicoes) {
 // - posicoes: ativos com os cálculos feitos (de calcularPosicoes)
 function GraficoPizza({ posicoes }) {
   const refGrafico = useRef(null)
-  const fatias = useMemo(() => montarFatias(posicoes), [posicoes])
+  // A distribuição só é recalculada quando a carteira muda...
+  const fatiasBase = useMemo(() => montarFatias(posicoes), [posicoes])
+  // ...mas as cores são lidas do CSS A CADA renderização (é barato: são poucas). Assim, quando o tema
+  // troca, o App renderiza de novo e as fatias já saem com as cores do tema novo.
+  const fatias = fatiasBase.map((fatia) => ({ ...fatia, cor: lerCor(fatia.variavelCor) }))
 
   if (fatias.length === 0) {
     return <p className="grafico__vazio">O gráfico aparece quando você adicionar ativos.</p>

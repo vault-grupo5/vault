@@ -7,6 +7,20 @@
     <meta name="theme-color" content="#0B0B12" />
     <meta name="description" content="VAULT — carteira de investimentos com cotações da B3" />
     <title>VAULT · Minha carteira</title>
+    <!--
+      Define o tema (claro/escuro) ANTES da página aparecer. Se fosse feito só pelo React,
+      a pessoa veria um "flash" do tema escuro antes de trocar para o claro.
+      Ordem: 1) escolha salva pelo botão do tema; 2) preferência do sistema; 3) escuro.
+    -->
+    <script>
+      try {
+        var salvo = localStorage.getItem('vault:tema')
+        var claro = window.matchMedia('(prefers-color-scheme: light)').matches
+        document.documentElement.dataset.tema = salvo === 'claro' || salvo === 'escuro' ? salvo : claro ? 'claro' : 'escuro'
+      } catch (erro) {
+        document.documentElement.dataset.tema = 'escuro'
+      }
+    </script>
     <!-- Fonte Inter (Google Fonts). Se não carregar, o CSS usa a fonte do sistema. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
