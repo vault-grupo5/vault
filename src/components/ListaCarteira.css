@@ -1,0 +1,313 @@
+/*
+  Estilos da lista de ativos (ListaCarteira + LinhaAtivo).
+  Usamos "container query": a tabela vira cartões quando o ESPAÇO DA LISTA
+  fica estreito (não importa o tamanho da tela). Assim funciona tanto no celular
+  quanto num notebook pequeno, onde a lista divide espaço com o formulário.
+*/
+
+.grid__lista {
+  container-type: inline-size; /* permite usar @container lá embaixo */
+}
+
+/* ---------- Tabela (telas largas) ---------- */
+
+.tabela-rolagem {
+  overflow-x: auto; /* se mesmo assim não couber, rola de lado em vez de quebrar a página */
+  margin: 0 calc(var(--espaco) * -1.25); /* encosta a tabela nas bordas do cartão */
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.tabela th,
+.tabela td {
+  padding: 12px 10px;
+  text-align: right;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* primeira e última coluna com o mesmo respiro do cartão */
+.tabela th:first-child,
+.tabela td:first-child {
+  padding-left: calc(var(--espaco) * 1.25);
+  text-align: left;
+}
+.tabela th:last-child,
+.tabela td:last-child {
+  padding-right: calc(var(--espaco) * 1.25);
+}
+
+.tabela thead th {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--cor-texto-secundario);
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.linha {
+  border-bottom: 1px solid var(--cor-borda);
+  transition: background var(--transicao);
+}
+
+.linha:last-child {
+  border-bottom: none;
+}
+
+.linha:hover {
+  background: var(--cor-cartao-hover);
+}
+
+/* ---------- Coluna do ativo ---------- */
+
+.linha__ativo {
+  font-weight: normal;
+}
+
+.ativo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ativo__logo {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #fff;
+  object-fit: contain;
+}
+
+/* Quando não tem logo: quadrado roxo com as 2 primeiras letras */
+.ativo__logo--iniciais {
+  display: grid;
+  place-items: center;
+  background: var(--cor-destaque-fundo);
+  color: var(--cor-destaque-claro);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.ativo__textos {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ativo__ticker {
+  font-weight: 700;
+  color: var(--cor-texto);
+}
+
+.ativo__nome {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis; /* nomes compridos terminam em "…" */
+  font-size: 0.8rem;
+  color: var(--cor-texto-secundario);
+}
+
+.ativo__sem-cotacao {
+  color: var(--cor-texto-secundario);
+  cursor: help;
+}
+
+/* ---------- Outras colunas ---------- */
+
+.linha__preco,
+.linha__lucro {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.linha__valor {
+  font-weight: 600;
+}
+
+
+.campo__entrada--pequeno {
+  width: 100px;
+  min-height: 36px;
+  text-align: right;
+}
+
+/* ---------- Ações (editar, remover, confirmar) ---------- */
+
+.acoes {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.acoes--coluna {
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.acoes__pergunta {
+  font-size: 0.85rem;
+  color: var(--cor-perda);
+  font-weight: 600;
+}
+
+.botao--confirmar {
+  background: var(--cor-perda-fundo);
+  color: var(--cor-perda);
+  border-color: var(--cor-perda);
+}
+
+/* Textos de erro na edição não devem forçar a linha a ficar enorme */
+.linha__acoes .campo__erro {
+  white-space: normal;
+  max-width: 220px;
+  text-align: right;
+}
+
+/* ---------- Carteira vazia ---------- */
+
+.vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: calc(var(--espaco) * 2) var(--espaco);
+  text-align: center;
+}
+
+.vazio__icone {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 8px;
+  border-radius: 20px;
+  background: var(--cor-destaque-fundo);
+  color: var(--cor-destaque-claro);
+  font-size: 2rem;
+}
+
+.vazio__titulo {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.vazio__texto {
+  max-width: 320px;
+  margin-bottom: 8px;
+  color: var(--cor-texto-secundario);
+}
+
+.vazio .botao {
+  text-decoration: none;
+}
+
+/* ---------- Modo cartão (lista estreita) ----------
+   Cada linha da tabela vira um cartãozinho com rótulo em cima de cada valor.
+   O rótulo vem do atributo data-rotulo de cada <td>. */
+
+@container (max-width: 720px) {
+  .tabela-rolagem {
+    margin: 0;
+    overflow: visible;
+  }
+
+  .tabela,
+  .tabela tbody {
+    display: block;
+  }
+
+  /* O cabeçalho some da tela, mas continua para leitores de tela */
+  .tabela thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  .linha {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 16px;
+    padding: 14px;
+    margin-bottom: 10px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 12px;
+  }
+
+  .linha:last-child {
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--cor-borda);
+  }
+
+  .tabela .linha th,
+  .tabela .linha td {
+    display: block;
+    padding: 0;
+    text-align: left;
+    white-space: normal;
+  }
+
+  /* O ativo ocupa a linha toda, no topo do cartão */
+  .tabela .linha .linha__ativo {
+    grid-column: 1 / -1;
+    padding-right: 90px; /* espaço para os botões no canto */
+  }
+
+  /* Rótulo em cima de cada valor */
+  .tabela .linha td[data-rotulo]::before {
+    content: attr(data-rotulo);
+    display: block;
+    margin-bottom: 2px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--cor-texto-secundario);
+  }
+
+  .linha__preco,
+  .linha__lucro {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  /* Botões de ação no canto superior direito do cartão */
+  .tabela .linha .linha__acoes {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    padding: 0;
+  }
+
+  /* Na edição/remoção os botões descem para o fim do cartão (precisam de espaço) */
+  .tabela .linha .linha__acoes:has(form, [role='group']) {
+    position: static;
+    grid-column: 1 / -1;
+  }
+
+  .acoes--coluna {
+    align-items: stretch;
+  }
+
+  .linha__acoes .campo__erro {
+    max-width: none;
+    text-align: left;
+  }
+
+  .campo__entrada--pequeno {
+    width: 100%;
+    text-align: left;
+  }
+}

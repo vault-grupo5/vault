@@ -1,0 +1,101 @@
+/* Estilos do cartão de resumo (ResumoCarteira.jsx) */
+
+.resumo {
+  display: grid;
+  gap: calc(var(--espaco) * 1.5);
+}
+
+.resumo__principal {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.resumo__rotulo {
+  font-size: 0.85rem;
+  color: var(--cor-texto-secundario);
+}
+
+/* Valor total grande; clamp() deixa a fonte menor no celular e maior no PC */
+.resumo__total {
+  font-size: clamp(2.2rem, 7vw, 3.4rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.resumo__esqueleto {
+  width: 260px;
+  max-width: 100%;
+  height: 3rem;
+}
+
+.resumo__pilulas {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.resumo__desde,
+.resumo__dica {
+  font-size: 0.85rem;
+  color: var(--cor-texto-secundario);
+}
+
+.resumo__aviso {
+  font-size: 0.8rem;
+  color: #fbbf24;
+}
+
+/* ---------- Indicadores menores ---------- */
+
+.resumo__indicadores {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)); /* 2 por linha no celular */
+  gap: 12px;
+  margin: 0;
+}
+
+.indicador {
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--cor-fundo);
+  border: 1px solid var(--cor-borda);
+  transition: border-color var(--transicao);
+}
+
+.indicador:hover {
+  border-color: var(--cor-borda-forte);
+}
+
+.indicador__rotulo {
+  font-size: 0.75rem;
+  color: var(--cor-texto-secundario);
+}
+
+.indicador__valor {
+  margin: 4px 0 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.indicador__valor--hoje {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+
+/* No PC: valor total à esquerda e 4 indicadores lado a lado à direita */
+@media (min-width: 960px) {
+  .resumo {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    align-items: center;
+  }
+
+  .resumo__indicadores {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

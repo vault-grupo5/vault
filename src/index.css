@@ -220,6 +220,21 @@ p {
   background: rgba(139, 139, 163, 0.15);
 }
 
+/* ---------- Cores de texto para ganho/perda ---------- */
+
+.texto--ganho {
+  color: var(--cor-ganho);
+}
+.texto--perda {
+  color: var(--cor-perda);
+}
+.texto--neutro {
+  color: var(--cor-texto);
+}
+.texto--secundario {
+  color: var(--cor-texto-secundario);
+}
+
 /* ---------- Dinheiro com centavos apagados ---------- */
 
 .dinheiro__centavos {
