@@ -278,3 +278,8 @@
 .rodape a {
   color: var(--cor-destaque-claro);
 }
+
+.rodape__busca {
+  display: block;
+  margin-top: 4px;
+}

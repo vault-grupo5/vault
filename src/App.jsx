@@ -6,15 +6,18 @@ import FormularioAtivo from './components/FormularioAtivo.jsx'
 import ListaCarteira from './components/ListaCarteira.jsx'
 import GraficoPizza from './components/GraficoPizza.jsx'
 import Aviso from './components/Aviso.jsx'
+import { useAtualizacaoAutomatica } from './hooks/useAtualizacaoAutomatica.js'
 import PainelHistorico from './components/PainelHistorico.jsx'
 import { carregarCarteira, salvarCarteira } from './utils/storage.js'
 import { calcularPosicoes, calcularResumo } from './utils/calculos.js'
 import { carregarOrdenacao, ordenarPosicoes, salvarOrdenacao } from './utils/ordenacao.js'
 import { buscarCotacoes } from './services/brapi.js'
+import { formatarHorario } from './utils/formatacao.js'
 import './App.css'
 
 // De quanto em quanto tempo as cotações são atualizadas sozinhas.
 // A brapi grátis tem ~30 min de atraso e o cache dura 10 min, então 10 min basta.
+// Custo: com 5 ativos são 30 requisições por hora (o plano grátis permite 15.000 por mês).
 const INTERVALO_ATUALIZACAO_MS = 10 * 60 * 1000
 
 // Componente principal: guarda o estado da carteira e das cotações e monta o layout.
@@ -32,6 +35,8 @@ function App() {
   const [errosCotacao, setErrosCotacao] = useState({})
   // Começa "carregando" se já há ativos salvos: a busca vai começar logo em seguida
   const [carregando, setCarregando] = useState(ativos.length > 0)
+  // Quando as cotações foram buscadas pela última vez (ms). Serve de base para a atualização automática.
+  const [ultimaBusca, setUltimaBusca] = useState(null)
   // Aviso flutuante mostrado após cadastrar, editar ou remover: { id, texto, tipo }
   const [aviso, setAviso] = useState(null)
   // Critério de ordenação da lista (lembrado entre visitas)
@@ -70,20 +75,26 @@ function App() {
       setCotacoes((atuais) => ({ ...atuais, ...novas }))
       setErrosCotacao(erros)
       setCarregando(false)
+      setUltimaBusca(Date.now())
     },
     [chaveTickers],
   )
 
-  // Busca as cotações quando o app abre, quando os tickers mudam
-  // e depois a cada INTERVALO_ATUALIZACAO_MS
+  // Busca as cotações quando o app abre e quando os tickers mudam
   useEffect(() => {
     // Buscar dados de uma API externa é exatamente o uso certo de um useEffect,
     // por isso desligamos aqui o aviso do linter sobre setState dentro do effect.
     // oxlint-disable-next-line react/set-state-in-effect
     atualizarCotacoes()
-    const timer = setInterval(atualizarCotacoes, INTERVALO_ATUALIZACAO_MS)
-    return () => clearInterval(timer) // limpa o timer quando o componente sai ou os tickers mudam
   }, [atualizarCotacoes])
+
+  // Atualização automática: a cada INTERVALO_ATUALIZACAO_MS, respeitando o cache e
+  // pausando enquanto a aba está escondida (ver utils/agendador.js)
+  useAtualizacaoAutomatica({
+    aoAtualizar: atualizarCotacoes,
+    ultimaBusca,
+    intervaloMs: INTERVALO_ATUALIZACAO_MS,
+  })
 
   // ---------- Ações sobre a carteira ----------
   // Sempre criamos uma NOVA lista (nunca alteramos a antiga),
@@ -204,6 +215,12 @@ function App() {
 
       <footer className="rodape">
         VAULT · Grupo 5 · DW2 — cotações da <a href="https://brapi.dev">brapi</a> com atraso de ~30 min
+        {ultimaBusca && (
+          <span className="rodape__busca">
+            Atualização automática a cada {INTERVALO_ATUALIZACAO_MS / 60000} min, pausada com a aba em segundo
+            plano · última busca às {formatarHorario(ultimaBusca)}
+          </span>
+        )}
       </footer>
     </div>
   )
