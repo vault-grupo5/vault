@@ -13,6 +13,7 @@ import { calcularPosicoes, calcularResumo } from './utils/calculos.js'
 import { carregarOrdenacao, ordenarPosicoes, salvarOrdenacao } from './utils/ordenacao.js'
 import { buscarCotacoes } from './services/brapi.js'
 import { formatarHorario } from './utils/formatacao.js'
+import { baixarArquivoCsv, gerarCsv, nomeDoArquivoCsv } from './utils/exportarCsv.js'
 import './App.css'
 
 // De quanto em quanto tempo as cotações são atualizadas sozinhas.
@@ -143,6 +144,12 @@ function App() {
     salvarOrdenacao(criterio)
   }
 
+  // Baixa a carteira em CSV, na mesma ordem em que aparece na lista
+  function exportarCarteira() {
+    baixarArquivoCsv(nomeDoArquivoCsv(), gerarCsv(posicoesOrdenadas, resumo))
+    mostrarAviso(`Carteira exportada em CSV (${posicoesOrdenadas.length} ativo(s))`, 'sucesso')
+  }
+
   // Ativo do painel de histórico. Se ele sumir da carteira, o painel simplesmente fecha.
   const posicaoAberta = posicoes.find((p) => p.ticker === tickerAberto)
   const fecharHistorico = useCallback(() => setTickerAberto(null), [])
@@ -193,6 +200,7 @@ function App() {
             posicoes={posicoesOrdenadas}
             ordem={ordem}
             aoMudarOrdem={mudarOrdem}
+            aoExportar={exportarCarteira}
             carregando={carregando}
             erros={errosCotacao}
             aoEditar={editarAtivo}

@@ -8,11 +8,22 @@ import './ListaCarteira.css'
 // Props:
 // - posicoes: ativos com os cálculos feitos, JÁ na ordem em que devem aparecer
 // - ordem / aoMudarOrdem(criterio): critério de ordenação escolhido e a função que o troca
+// - aoExportar: baixa a carteira em CSV
 // - carregando: true enquanto as cotações chegam
 // - erros: { PETR4: 'mensagem' } com as cotações que falharam
 // - aoEditar, aoRemover: funções do App
 // - aoAbrirHistorico(ticker): chamado ao clicar num ativo
-function ListaCarteira({ posicoes, ordem, aoMudarOrdem, carregando, erros, aoEditar, aoRemover, aoAbrirHistorico }) {
+function ListaCarteira({
+  posicoes,
+  ordem,
+  aoMudarOrdem,
+  aoExportar,
+  carregando,
+  erros,
+  aoEditar,
+  aoRemover,
+  aoAbrirHistorico,
+}) {
   // Estado de carteira vazia: em vez de uma tabela sem nada, um convite para começar
   if (posicoes.length === 0) {
     return (
@@ -34,9 +45,9 @@ function ListaCarteira({ posicoes, ordem, aoMudarOrdem, carregando, erros, aoEdi
 
   return (
     <>
-      {/* Barra de ferramentas da lista. Com um ativo só, ordenar não faz sentido: escondemos o seletor */}
-      {posicoes.length > 1 && (
-        <div className="lista__barra">
+      {/* Barra de ferramentas da lista: ordenar (só faz sentido com 2+ ativos) e exportar */}
+      <div className="lista__barra">
+        {posicoes.length > 1 ? (
           <label className="lista__ordenar">
             <span className="campo__rotulo">Ordenar por</span>
             <select className="seletor" value={ordem} onChange={(evento) => aoMudarOrdem(evento.target.value)}>
@@ -47,8 +58,14 @@ function ListaCarteira({ posicoes, ordem, aoMudarOrdem, carregando, erros, aoEdi
               ))}
             </select>
           </label>
-        </div>
-      )}
+        ) : (
+          <span />
+        )}
+
+        <button type="button" className="botao botao--fantasma lista__exportar" onClick={aoExportar}>
+          <span aria-hidden="true">⤓</span> Exportar CSV
+        </button>
+      </div>
 
       {/* Aviso para leitores de tela quando a ordem muda (a tabela muda sem o foco sair do seletor) */}
       <p className="sr-only" role="status">

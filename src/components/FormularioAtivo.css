@@ -22,6 +22,8 @@
 
 .campo__entrada--ticker::placeholder {
   font-weight: 400;
+  text-transform: none; /* o exemplo "PETR4 ou Petrobras" aparece como foi escrito */
+  letter-spacing: normal;
 }
 
 .formulario__botao {
