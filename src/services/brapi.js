@@ -9,6 +9,13 @@ const URL_BASE = 'https://brapi.dev/api/quote'
 const TOKEN = import.meta.env.VITE_BRAPI_TOKEN
 const TEMPO_CACHE_MS = 10 * 60 * 1000 // 10 minutos
 const CHAVE_CACHE = 'vault:cotacoes'
+const PAUSA_ENTRE_TICKERS_MS = 300 // respiro entre uma requisição e outra
+const ESPERA_ANTES_DE_REPETIR_MS = 2000 // espera antes de repetir quando a API diz "limite atingido" (429)
+
+// Devolve uma Promise que termina depois de "ms" milissegundos. Uso: await esperar(300)
+function esperar(ms) {
+  return new Promise((resolver) => setTimeout(resolver, ms))
+}
 
 // ---------- Cache (guardado no localStorage) ----------
 
@@ -54,6 +61,12 @@ export async function buscarCotacao(ticker, { ignorarCache = false } = {}) {
   let resposta
   try {
     resposta = await fetch(url)
+    // 429 = "muitas requisições". Esperamos um pouco e tentamos de novo, uma única vez.
+    // Se falhar de novo, o erro segue para a mensagem amigável lá embaixo.
+    if (resposta.status === 429) {
+      await esperar(ESPERA_ANTES_DE_REPETIR_MS)
+      resposta = await fetch(url)
+    }
   } catch {
     throw new Error('Sem conexão com a API. Verifique sua internet.')
   }
@@ -84,17 +97,25 @@ export async function buscarCotacao(ticker, { ignorarCache = false } = {}) {
 }
 
 // Busca vários tickers (uma requisição por ticker, por causa do plano grátis).
+// Busca UM DE CADA VEZ, com uma pausa curta entre eles: pedir todos ao mesmo
+// tempo fazia a brapi responder "limite de requisições" (429) para alguns.
 // Se um falhar, os outros continuam: o resultado traz { cotacoes, erros }.
 export async function buscarCotacoes(tickers, opcoes) {
   const unicos = [...new Set(tickers.map((t) => t.trim().toUpperCase()))]
-  const resultados = await Promise.allSettled(unicos.map((t) => buscarCotacao(t, opcoes)))
 
   const cotacoes = {}
   const erros = {}
-  resultados.forEach((r, i) => {
-    if (r.status === 'fulfilled') cotacoes[unicos[i]] = r.value
-    else erros[unicos[i]] = r.reason.message
-  })
+  for (const [indice, ticker] of unicos.entries()) {
+    // Pausa só antes de uma requisição de verdade (se vem do cache, não precisa esperar)
+    const vaiNaApi = opcoes?.ignorarCache || !buscarNoCache(ticker)
+    if (indice > 0 && vaiNaApi) await esperar(PAUSA_ENTRE_TICKERS_MS)
+
+    try {
+      cotacoes[ticker] = await buscarCotacao(ticker, opcoes)
+    } catch (erro) {
+      erros[ticker] = erro.message
+    }
+  }
   return { cotacoes, erros }
 }
 
