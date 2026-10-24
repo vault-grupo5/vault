@@ -1,0 +1,54 @@
+/*
+  Variáveis de cor e de estilo do VAULT.
+  Tudo que é cor, espaçamento ou arredondamento fica aqui, num lugar só.
+  Assim, se o grupo quiser mudar o roxo, muda numa linha e o site inteiro acompanha.
+*/
+
+:root {
+  /* ---------- Fundo e superfícies ---------- */
+  --cor-fundo: #0b0b12; /* fundo da página */
+  --cor-cartao: #14141f; /* fundo dos cartões */
+  --cor-cartao-hover: #1a1a28; /* cartão com o mouse em cima */
+  --cor-borda: #26263a; /* borda dos cartões e divisórias */
+  --cor-borda-forte: #3a3a55; /* borda de campos de formulário */
+
+  /* ---------- Destaque roxo ---------- */
+  --cor-destaque: #8b5cf6;
+  --cor-destaque-claro: #c4b5fd;
+  --cor-destaque-fundo: rgba(139, 92, 246, 0.15); /* roxo transparente pra fundos */
+
+  /* ---------- Texto ---------- */
+  --cor-texto: #f4f4f8; /* texto principal */
+  --cor-texto-secundario: #8b8ba3; /* rótulos e textos de apoio */
+  --cor-centavos: #5d5d78; /* centavos "apagados" no valor total */
+
+  /* ---------- Ganho e perda ---------- */
+  --cor-ganho: #4ade80;
+  --cor-ganho-fundo: rgba(34, 197, 94, 0.15);
+  --cor-perda: #fb7185;
+  --cor-perda-fundo: rgba(244, 63, 94, 0.15);
+
+  /* ---------- Cores das fatias do gráfico de pizza ----------
+     Começam nos roxos da paleta e depois variam o tom, pra que
+     fatias vizinhas não fiquem parecidas demais. */
+  --cor-grafico-1: #8b5cf6;
+  --cor-grafico-2: #c4b5fd;
+  --cor-grafico-3: #6d28d9;
+  --cor-grafico-4: #e879f9;
+  --cor-grafico-5: #818cf8;
+  --cor-grafico-6: #a78bfa;
+  --cor-grafico-7: #f0abfc;
+  --cor-grafico-8: #4c1d95;
+
+  /* ---------- Tipografia ---------- */
+  --fonte: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --fonte-mono: ui-monospace, 'Cascadia Code', Consolas, monospace;
+
+  /* ---------- Medidas ---------- */
+  --raio: 16px; /* arredondamento dos cartões */
+  --raio-pequeno: 10px; /* botões e campos */
+  --raio-pilula: 999px; /* deixa totalmente redondo */
+  --espaco: 16px; /* espaçamento padrão */
+  --sombra: 0 12px 32px -12px rgba(0, 0, 0, 0.6);
+  --transicao: 180ms ease; /* duração padrão das animações */
+}
