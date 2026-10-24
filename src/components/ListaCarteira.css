@@ -9,6 +9,49 @@
   container-type: inline-size; /* permite usar @container lá embaixo */
 }
 
+/* ---------- Barra de ferramentas (ordenar e, depois, exportar) ---------- */
+
+.lista__barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-bottom: 12px;
+}
+
+.lista__ordenar {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Seletor (<select>) com a mesma cara dos campos de formulário */
+.seletor {
+  min-height: 38px;
+  padding: 0 10px;
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition:
+    border-color var(--transicao),
+    box-shadow var(--transicao);
+}
+
+.seletor:hover {
+  border-color: var(--cor-destaque);
+}
+
+.seletor:focus-visible {
+  outline: none;
+  border-color: var(--cor-destaque);
+  box-shadow: 0 0 0 3px var(--cor-destaque-fundo);
+}
+
 /* ---------- Tabela (telas largas) ---------- */
 
 .tabela-rolagem {

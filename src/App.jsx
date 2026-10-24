@@ -9,6 +9,7 @@ import Aviso from './components/Aviso.jsx'
 import PainelHistorico from './components/PainelHistorico.jsx'
 import { carregarCarteira, salvarCarteira } from './utils/storage.js'
 import { calcularPosicoes, calcularResumo } from './utils/calculos.js'
+import { carregarOrdenacao, ordenarPosicoes, salvarOrdenacao } from './utils/ordenacao.js'
 import { buscarCotacoes } from './services/brapi.js'
 import './App.css'
 
@@ -33,6 +34,8 @@ function App() {
   const [carregando, setCarregando] = useState(ativos.length > 0)
   // Aviso flutuante mostrado após cadastrar, editar ou remover: { id, texto, tipo }
   const [aviso, setAviso] = useState(null)
+  // Critério de ordenação da lista (lembrado entre visitas)
+  const [ordem, setOrdem] = useState(carregarOrdenacao)
   // Ticker cujo histórico está aberto no painel (null = painel fechado)
   const [tickerAberto, setTickerAberto] = useState(null)
 
@@ -120,6 +123,15 @@ function App() {
   const posicoes = useMemo(() => calcularPosicoes(ativos, cotacoes), [ativos, cotacoes])
   const resumo = useMemo(() => calcularResumo(posicoes), [posicoes])
 
+  // Lista na ordem escolhida. Só a LISTA é reordenada: o gráfico de pizza continua usando
+  // "posicoes" (ordem de cadastro) para que cada ativo mantenha sempre a mesma cor.
+  const posicoesOrdenadas = useMemo(() => ordenarPosicoes(posicoes, ordem), [posicoes, ordem])
+
+  function mudarOrdem(criterio) {
+    setOrdem(criterio)
+    salvarOrdenacao(criterio)
+  }
+
   // Ativo do painel de histórico. Se ele sumir da carteira, o painel simplesmente fecha.
   const posicaoAberta = posicoes.find((p) => p.ticker === tickerAberto)
   const fecharHistorico = useCallback(() => setTickerAberto(null), [])
@@ -167,7 +179,9 @@ function App() {
             Meus ativos
           </h2>
           <ListaCarteira
-            posicoes={posicoes}
+            posicoes={posicoesOrdenadas}
+            ordem={ordem}
+            aoMudarOrdem={mudarOrdem}
             carregando={carregando}
             erros={errosCotacao}
             aoEditar={editarAtivo}
