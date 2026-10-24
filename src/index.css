@@ -70,6 +70,16 @@ p {
     transform var(--transicao);
 }
 
+/* Hover: a borda acende um pouco quando o mouse passa pelo cartão */
+.cartao:hover {
+  border-color: var(--cor-borda-forte);
+}
+
+/* Cartão com o formulário em foco ganha borda roxa (focus-within = algum filho tem foco) */
+.cartao:focus-within {
+  border-color: rgba(139, 92, 246, 0.5);
+}
+
 .cartao__titulo {
   font-size: 0.8rem;
   font-weight: 600;

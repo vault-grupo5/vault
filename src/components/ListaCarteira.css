@@ -63,6 +63,32 @@
   background: var(--cor-cartao-hover);
 }
 
+/* Linha pisca verde/vermelho quando a cotação muda (classe colocada pelo LinhaAtivo.jsx) */
+.linha--piscar-ganho {
+  animation: piscar-ganho 1.2s ease-out;
+}
+.linha--piscar-perda {
+  animation: piscar-perda 1.2s ease-out;
+}
+
+@keyframes piscar-ganho {
+  from {
+    background: rgba(34, 197, 94, 0.28);
+  }
+  to {
+    background: transparent;
+  }
+}
+
+@keyframes piscar-perda {
+  from {
+    background: rgba(244, 63, 94, 0.28);
+  }
+  to {
+    background: transparent;
+  }
+}
+
 /* ---------- Coluna do ativo ---------- */
 
 .linha__ativo {
@@ -309,5 +335,19 @@
   .campo__entrada--pequeno {
     width: 100%;
     text-align: left;
+  }
+}
+
+/* Cartões numa lista "média" (ex: PC, onde a lista divide espaço com o formulário):
+   os 5 números ficam lado a lado numa linha só, em vez de 2 por linha */
+@container (min-width: 560px) and (max-width: 720px) {
+  .linha {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .linha__preco,
+  .linha__lucro {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

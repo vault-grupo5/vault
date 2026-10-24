@@ -1,6 +1,7 @@
 import Dinheiro from './Dinheiro.jsx'
 import Pilula from './Pilula.jsx'
 import { formatarMoeda, formatarMoedaComSinal, formatarPorcentagem } from '../utils/formatacao.js'
+import { useNumeroAnimado } from '../hooks/useNumeroAnimado.js'
 import './ResumoCarteira.css'
 
 // Cartão de resumo: valor total da carteira em destaque,
@@ -10,6 +11,8 @@ import './ResumoCarteira.css'
 // - resumo: objeto de calcularResumo() (utils/calculos.js)
 // - carregando: true enquanto as cotações chegam pela primeira vez
 function ResumoCarteira({ resumo, carregando }) {
+  // O total "corre" até o valor novo quando muda (ver hooks/useNumeroAnimado.js)
+  const totalAnimado = useNumeroAnimado(resumo.valorAtual)
   const vazia = resumo.quantidadeAtivos === 0
   // Só mostramos o esqueleto se ainda não temos NENHUMA cotação
   const esperandoCotacoes = carregando && resumo.semCotacao === resumo.quantidadeAtivos && !vazia
@@ -25,7 +28,7 @@ function ResumoCarteira({ resumo, carregando }) {
           <span className="esqueleto resumo__esqueleto" aria-label="Carregando valor total" />
         ) : (
           <p className="resumo__total" aria-labelledby="rotulo-total">
-            <Dinheiro valor={resumo.valorAtual} />
+            <Dinheiro valor={totalAnimado} />
           </p>
         )}
 

@@ -5,6 +5,7 @@ import ResumoCarteira from './components/ResumoCarteira.jsx'
 import FormularioAtivo from './components/FormularioAtivo.jsx'
 import ListaCarteira from './components/ListaCarteira.jsx'
 import GraficoPizza from './components/GraficoPizza.jsx'
+import Aviso from './components/Aviso.jsx'
 import { carregarCarteira, salvarCarteira } from './utils/storage.js'
 import { calcularPosicoes, calcularResumo } from './utils/calculos.js'
 import { buscarCotacoes } from './services/brapi.js'
@@ -29,6 +30,8 @@ function App() {
   const [errosCotacao, setErrosCotacao] = useState({})
   // Começa "carregando" se já há ativos salvos: a busca vai começar logo em seguida
   const [carregando, setCarregando] = useState(ativos.length > 0)
+  // Aviso flutuante mostrado após cadastrar, editar ou remover: { id, texto, tipo }
+  const [aviso, setAviso] = useState(null)
 
   // Toda vez que a lista de ativos muda, salvamos no navegador
   useEffect(() => {
@@ -80,19 +83,33 @@ function App() {
   // Sempre criamos uma NOVA lista (nunca alteramos a antiga),
   // porque é assim que o React percebe que algo mudou e redesenha a tela.
 
+  // Mostra um aviso novo. O id (contador) faz o Aviso reiniciar a contagem de tempo
+  // mesmo que o texto seja igual ao anterior.
+  function mostrarAviso(texto, tipo) {
+    setAviso((anterior) => ({ id: (anterior?.id ?? 0) + 1, texto, tipo }))
+  }
+
+  // useCallback: a função fica a mesma entre renders, senão o timer do Aviso reiniciaria à toa
+  const fecharAviso = useCallback(() => setAviso(null), [])
+
   // O formulário já buscou a cotação para validar o ticker, então aproveitamos ela
   function adicionarAtivo(novoAtivo, cotacao) {
     setAtivos((atuais) => [...atuais, novoAtivo])
     if (cotacao) setCotacoes((atuais) => ({ ...atuais, [novoAtivo.ticker]: cotacao }))
+    mostrarAviso(`${novoAtivo.ticker} adicionado à carteira`, 'sucesso')
   }
 
   // mudancas: só os campos que mudaram, ex { quantidade: 200 }
   function editarAtivo(id, mudancas) {
+    const ativo = ativos.find((a) => a.id === id)
     setAtivos((atuais) => atuais.map((a) => (a.id === id ? { ...a, ...mudancas } : a)))
+    if (ativo) mostrarAviso(`${ativo.ticker} atualizado`, 'sucesso')
   }
 
   function removerAtivo(id) {
+    const ativo = ativos.find((a) => a.id === id)
     setAtivos((atuais) => atuais.filter((a) => a.id !== id))
+    if (ativo) mostrarAviso(`${ativo.ticker} removido da carteira`, 'remocao')
   }
 
   // ---------- Valores calculados ----------
@@ -158,6 +175,8 @@ function App() {
           <GraficoPizza posicoes={posicoes} />
         </section>
       </main>
+
+      <Aviso aviso={aviso} aoFechar={fecharAviso} />
 
       <footer className="rodape">
         VAULT · Grupo 5 · DW2 — cotações da <a href="https://brapi.dev">brapi</a> com atraso de ~30 min

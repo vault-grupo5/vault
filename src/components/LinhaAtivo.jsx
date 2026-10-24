@@ -28,6 +28,22 @@ function LinhaAtivo({ posicao, carregando, erro, aoEditar, aoRemover }) {
 
   const { cotacao, ticker } = posicao
 
+  // ---------- Piscar ao atualizar ----------
+  // Guardamos o último preço visto. Se o preço mudar, a linha pisca
+  // verde (subiu) ou vermelho (caiu). Comparar durante o render, guardando o
+  // valor anterior no estado, é o jeito recomendado pelo React para "reagir a uma mudança de prop".
+  const precoCotacao = cotacao?.preco ?? null
+  const [precoAnterior, setPrecoAnterior] = useState(precoCotacao)
+  const [piscar, setPiscar] = useState(null) // 'ganho', 'perda' ou null
+
+  if (precoCotacao !== precoAnterior) {
+    setPrecoAnterior(precoCotacao)
+    // Só pisca se já tínhamos um preço antes (não pisca na primeira carga)
+    if (precoAnterior !== null && precoCotacao !== null) {
+      setPiscar(precoCotacao > precoAnterior ? 'ganho' : 'perda')
+    }
+  }
+
   // ---------- Edição ----------
 
   function comecarEdicao() {
@@ -98,7 +114,15 @@ function LinhaAtivo({ posicao, carregando, erro, aoEditar, aoRemover }) {
   const emEdicao = modo === 'editar'
 
   return (
-    <tr className="linha" onKeyDown={aoApertarTecla}>
+    <tr
+      className={`linha ${piscar ? `linha--piscar-${piscar}` : ''}`}
+      onKeyDown={aoApertarTecla}
+      // Quando a animação CSS termina, tiramos a classe para poder piscar de novo depois
+      // (o "if" ignora animações de elementos de dentro da linha, como o esqueleto)
+      onAnimationEnd={(evento) => {
+        if (evento.target === evento.currentTarget) setPiscar(null)
+      }}
+    >
       {/* Coluna do ativo: logo, ticker e nome da empresa */}
       <th scope="row" className="linha__ativo">
         <div className="ativo">
