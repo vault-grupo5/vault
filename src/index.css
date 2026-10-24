@@ -121,7 +121,7 @@ p {
 }
 
 .botao--primario {
-  background: var(--cor-destaque);
+  background: var(--cor-botao);
   color: var(--cor-sobre-destaque);
 }
 

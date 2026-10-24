@@ -16,7 +16,8 @@
   --cor-destaque: #8b5cf6;
   --cor-destaque-claro: #c4b5fd;
   --cor-destaque-fundo: rgba(139, 92, 246, 0.15); /* roxo transparente pra fundos */
-  --cor-destaque-hover: #7c4dee; /* botão principal com o mouse em cima */
+  --cor-botao: #7c4dee; /* fundo do botão principal: roxo um pouco mais escuro que o destaque, para o texto branco ter contraste ≥ 4,5:1 */
+  --cor-destaque-hover: #6b40e0; /* botão principal com o mouse em cima */
   --cor-sobre-destaque: #ffffff; /* texto escrito em cima do roxo (botão principal) */
   --cor-aviso: #fbbf24; /* amarelo dos avisos (ex: "ativo sem cotação") */
   --cor-sobreposicao: rgba(5, 5, 10, 0.72); /* fundo escurecido atrás do painel de histórico */
@@ -87,6 +88,7 @@
   --cor-destaque: #7c3aed;
   --cor-destaque-claro: #6d28d9;
   --cor-destaque-fundo: rgba(124, 58, 237, 0.1);
+  --cor-botao: #7c3aed;
   --cor-destaque-hover: #6d28d9;
   --cor-aviso: #b45309;
   --cor-sobreposicao: rgba(30, 22, 60, 0.45);
