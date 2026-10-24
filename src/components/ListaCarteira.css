@@ -101,23 +101,27 @@
   gap: 10px;
 }
 
-.ativo__logo {
-  flex-shrink: 0;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: #fff;
-  object-fit: contain;
+/* O ativo é um <button>: tiramos o visual padrão de botão para parecer texto da tabela */
+.ativo--botao {
+  padding: 4px 8px 4px 4px;
+  margin: -4px;
+  border: none;
+  border-radius: var(--raio-pequeno);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--transicao);
 }
 
-/* Quando não tem logo: quadrado roxo com as 2 primeiras letras */
-.ativo__logo--iniciais {
-  display: grid;
-  place-items: center;
-  background: var(--cor-destaque-fundo);
+.ativo--botao:hover .ativo__ticker {
   color: var(--cor-destaque-claro);
-  font-size: 0.8rem;
-  font-weight: 700;
+  text-decoration: underline;
+}
+
+.linha--clicavel {
+  cursor: pointer;
 }
 
 .ativo__textos {

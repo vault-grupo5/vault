@@ -6,6 +6,7 @@ import FormularioAtivo from './components/FormularioAtivo.jsx'
 import ListaCarteira from './components/ListaCarteira.jsx'
 import GraficoPizza from './components/GraficoPizza.jsx'
 import Aviso from './components/Aviso.jsx'
+import PainelHistorico from './components/PainelHistorico.jsx'
 import { carregarCarteira, salvarCarteira } from './utils/storage.js'
 import { calcularPosicoes, calcularResumo } from './utils/calculos.js'
 import { buscarCotacoes } from './services/brapi.js'
@@ -32,6 +33,8 @@ function App() {
   const [carregando, setCarregando] = useState(ativos.length > 0)
   // Aviso flutuante mostrado após cadastrar, editar ou remover: { id, texto, tipo }
   const [aviso, setAviso] = useState(null)
+  // Ticker cujo histórico está aberto no painel (null = painel fechado)
+  const [tickerAberto, setTickerAberto] = useState(null)
 
   // Toda vez que a lista de ativos muda, salvamos no navegador
   useEffect(() => {
@@ -117,6 +120,10 @@ function App() {
   const posicoes = useMemo(() => calcularPosicoes(ativos, cotacoes), [ativos, cotacoes])
   const resumo = useMemo(() => calcularResumo(posicoes), [posicoes])
 
+  // Ativo do painel de histórico. Se ele sumir da carteira, o painel simplesmente fecha.
+  const posicaoAberta = posicoes.find((p) => p.ticker === tickerAberto)
+  const fecharHistorico = useCallback(() => setTickerAberto(null), [])
+
   // Horário da cotação mais recente, para o indicador "ao vivo"
   const horarioCotacao = useMemo(() => {
     const horarios = posicoes.map((p) => p.cotacao?.atualizadoEm).filter(Boolean)
@@ -165,6 +172,7 @@ function App() {
             erros={errosCotacao}
             aoEditar={editarAtivo}
             aoRemover={removerAtivo}
+            aoAbrirHistorico={setTickerAberto}
           />
         </section>
 
@@ -175,6 +183,8 @@ function App() {
           <GraficoPizza posicoes={posicoes} />
         </section>
       </main>
+
+      {posicaoAberta && <PainelHistorico key={posicaoAberta.ticker} posicao={posicaoAberta} aoFechar={fecharHistorico} />}
 
       <Aviso aviso={aviso} aoFechar={fecharAviso} />
 

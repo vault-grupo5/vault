@@ -5,16 +5,59 @@
 // Por isso usamos cache: se a cotação foi buscada há pouco tempo,
 // devolvemos a que já temos em vez de gastar outra requisição.
 
+import { lerDoCache, salvarNoCache as salvarGenerico } from '../utils/cache.js'
+
 const URL_BASE = 'https://brapi.dev/api/quote'
 const TOKEN = import.meta.env.VITE_BRAPI_TOKEN
 const TEMPO_CACHE_MS = 10 * 60 * 1000 // 10 minutos
 const CHAVE_CACHE = 'vault:cotacoes'
+const CHAVE_HISTORICOS = 'vault:historicos'
+const TEMPO_CACHE_HISTORICO_MS = 60 * 60 * 1000 // 1 hora: são candles diários, mudam pouco
 const PAUSA_ENTRE_TICKERS_MS = 300 // respiro entre uma requisição e outra
 const ESPERA_ANTES_DE_REPETIR_MS = 2000 // espera antes de repetir quando a API diz "limite atingido" (429)
 
 // Devolve uma Promise que termina depois de "ms" milissegundos. Uso: await esperar(300)
 function esperar(ms) {
   return new Promise((resolver) => setTimeout(resolver, ms))
+}
+
+// ---------- Fila de requisições ----------
+// O plano grátis da brapi aceita só 1 requisição ao MESMO tempo: se duas chegam juntas,
+// uma recebe erro 429 mesmo com cota sobrando. Como o app faz vários tipos de busca
+// (cotações, histórico, sugestões), todas passam por esta fila e rodam uma após a outra.
+let fila = Promise.resolve()
+
+function enfileirar(tarefa) {
+  const resultado = fila.then(tarefa)
+  // Se uma tarefa der erro, a fila continua andando para as próximas
+  fila = resultado.catch(() => {})
+  return resultado
+}
+
+// Faz a requisição (dentro da fila) e devolve o JSON da resposta.
+// Se vier 429, espera um pouco e tenta de novo, uma única vez.
+// Em caso de erro, lança um Error com mensagem amigável e o código HTTP em erro.status.
+function pedirJson(url, codigo) {
+  return enfileirar(async () => {
+    let resposta
+    try {
+      resposta = await fetch(url)
+      if (resposta.status === 429) {
+        await esperar(ESPERA_ANTES_DE_REPETIR_MS)
+        resposta = await fetch(url)
+      }
+    } catch {
+      throw new Error('Sem conexão com a API. Verifique sua internet.')
+    }
+
+    const dados = await resposta.json().catch(() => ({}))
+    if (!resposta.ok) {
+      const erro = new Error(mensagemDeErro(resposta.status, codigo, dados))
+      erro.status = resposta.status
+      throw erro
+    }
+    return dados
+  })
 }
 
 // ---------- Cache (guardado no localStorage) ----------
@@ -58,24 +101,7 @@ export async function buscarCotacao(ticker, { ignorarCache = false } = {}) {
   const url = new URL(`${URL_BASE}/${encodeURIComponent(codigo)}`)
   if (TOKEN) url.searchParams.set('token', TOKEN)
 
-  let resposta
-  try {
-    resposta = await fetch(url)
-    // 429 = "muitas requisições". Esperamos um pouco e tentamos de novo, uma única vez.
-    // Se falhar de novo, o erro segue para a mensagem amigável lá embaixo.
-    if (resposta.status === 429) {
-      await esperar(ESPERA_ANTES_DE_REPETIR_MS)
-      resposta = await fetch(url)
-    }
-  } catch {
-    throw new Error('Sem conexão com a API. Verifique sua internet.')
-  }
-
-  const dados = await resposta.json().catch(() => ({}))
-
-  if (!resposta.ok) {
-    throw new Error(mensagemDeErro(resposta.status, codigo, dados))
-  }
+  const dados = await pedirJson(url, codigo)
 
   const resultado = dados.results?.[0]
   if (!resultado) {
@@ -94,6 +120,48 @@ export async function buscarCotacao(ticker, { ignorarCache = false } = {}) {
 
   salvarNoCache(codigo, cotacao)
   return cotacao
+}
+
+// Busca o histórico de preços dos últimos 3 meses (o máximo do plano grátis), um ponto por dia.
+// Devolve uma lista do mais antigo para o mais novo: [{ data: 1785121200000, fechamento: 41.01 }]
+// - data vem em milissegundos (a API manda em segundos; convertemos para o JavaScript entender)
+// - cache de 1 hora: abrir o mesmo ativo de novo não gasta requisição
+export async function buscarHistorico(ticker, { ignorarCache = false } = {}) {
+  const codigo = ticker.trim().toUpperCase()
+
+  if (!ignorarCache) {
+    const emCache = lerDoCache(CHAVE_HISTORICOS, codigo, TEMPO_CACHE_HISTORICO_MS)
+    if (emCache) return emCache
+  }
+
+  const url = new URL(`${URL_BASE}/${encodeURIComponent(codigo)}`)
+  url.searchParams.set('range', '3mo')
+  url.searchParams.set('interval', '1d')
+  if (TOKEN) url.searchParams.set('token', TOKEN)
+
+  let dados
+  try {
+    dados = await pedirJson(url, codigo)
+  } catch (erro) {
+    // 400/403 aqui significa que o plano não permite histórico deste ativo
+    if (erro.status === 400 || erro.status === 403) {
+      throw new Error(`Histórico de ${codigo} indisponível no plano atual.`, { cause: erro })
+    }
+    throw erro
+  }
+
+  const pontos = dados.results?.[0]?.historicalDataPrice ?? []
+  const historico = pontos
+    .filter((p) => typeof p.close === 'number') // alguns dias podem vir sem preço
+    .map((p) => ({ data: p.date * 1000, fechamento: p.close }))
+    .sort((a, b) => a.data - b.data)
+
+  if (historico.length === 0) {
+    throw new Error(`Sem histórico de preços para ${codigo}.`)
+  }
+
+  salvarGenerico(CHAVE_HISTORICOS, codigo, historico)
+  return historico
 }
 
 // Busca vários tickers (uma requisição por ticker, por causa do plano grátis).

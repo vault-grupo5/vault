@@ -1,0 +1,215 @@
+/* Estilos do painel de histórico (PainelHistorico.jsx) */
+
+/* O <dialog> vem com estilos próprios do navegador; aqui deixamos com a cara do VAULT */
+.painel {
+  width: min(720px, calc(100vw - 24px));
+  max-height: calc(100svh - 24px);
+  padding: 0;
+  overflow: auto;
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: var(--raio);
+  background: var(--cor-cartao);
+  color: var(--cor-texto);
+  box-shadow: var(--sombra);
+  animation: painel-entrar 220ms ease-out;
+}
+
+/* ::backdrop = o fundo escurecido atrás do painel */
+.painel::backdrop {
+  background: rgba(5, 5, 10, 0.72);
+  backdrop-filter: blur(3px);
+}
+
+@keyframes painel-entrar {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.painel__conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--espaco) * 1.25);
+  padding: calc(var(--espaco) * 1.25);
+}
+
+/* ---------- Cabeçalho do painel ---------- */
+
+.painel__cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.painel__titulos {
+  flex: 1;
+  min-width: 0;
+}
+
+.painel__titulo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.painel__subtitulo {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.85rem;
+  color: var(--cor-texto-secundario);
+}
+
+/* ---------- Números do período ---------- */
+
+.painel__numeros {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+/* ---------- Gráfico ---------- */
+
+.painel__figura {
+  margin: 0;
+}
+
+.painel__grafico {
+  position: relative;
+  height: 260px; /* o Chart.js precisa de uma altura definida para desenhar */
+}
+
+.painel__legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-top: 12px;
+  font-size: 0.8rem;
+  color: var(--cor-texto-secundario);
+}
+
+.painel__legenda-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.painel__traco {
+  display: inline-block;
+  width: 22px;
+}
+
+.painel__traco--linha {
+  height: 3px;
+  border-radius: 2px;
+}
+
+.painel__traco--tracejado {
+  height: 0;
+  border-top: 2px dashed;
+}
+
+/* ---------- Carregando e erro ---------- */
+
+.painel__carregando {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.painel__esqueleto {
+  display: block;
+  width: 100%;
+  height: 300px;
+  border-radius: 12px;
+}
+
+.painel__aviso {
+  font-size: 0.85rem;
+  color: var(--cor-texto-secundario);
+  text-align: center;
+}
+
+.painel__erro {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--cor-perda);
+  border-radius: 12px;
+  background: var(--cor-perda-fundo);
+}
+
+.painel__erro p {
+  flex: 1 1 220px;
+  font-size: 0.9rem;
+}
+
+/* ---------- Tabela alternativa ---------- */
+
+.painel__tabela summary {
+  width: fit-content;
+  padding: 6px 2px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--cor-destaque-claro);
+  cursor: pointer;
+}
+
+.painel__tabela-rolagem {
+  max-height: 220px;
+  margin-top: 8px;
+  overflow: auto;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pequeno);
+}
+
+.painel__tabela table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.painel__tabela th,
+.painel__tabela td {
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.painel__tabela td:last-child,
+.painel__tabela th:last-child {
+  text-align: right;
+}
+
+.painel__tabela thead th {
+  position: sticky;
+  top: 0;
+  background: var(--cor-cartao);
+  color: var(--cor-texto-secundario);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.painel__tabela tbody tr + tr td {
+  border-top: 1px solid var(--cor-borda);
+}
+
+/* ---------- Telas maiores ---------- */
+
+@media (min-width: 640px) {
+  .painel__numeros {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .painel__grafico {
+    height: 300px;
+  }
+}

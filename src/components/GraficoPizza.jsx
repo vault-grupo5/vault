@@ -3,6 +3,7 @@ import { Chart as ChartJS, ArcElement, Tooltip } from 'chart.js'
 import { Pie } from 'react-chartjs-2'
 import { calcularDistribuicao } from '../utils/calculos.js'
 import { formatarMoeda, formatarPorcentagem } from '../utils/formatacao.js'
+import { lerCor } from '../utils/cores.js'
 import './GraficoPizza.css'
 
 // O Chart.js é dividido em partes; registramos só as que usamos
@@ -13,13 +14,6 @@ ChartJS.register(ArcElement, Tooltip)
 const formatarParticipacao = (valor) => formatarPorcentagem(valor).replace('+', '')
 
 const MAXIMO_DE_FATIAS = 6 // temos 6 cores; a partir do 7º ativo, os menores viram "Outros"
-
-// Lê uma variável CSS de styles/variaveis.css (ex: '--cor-grafico-1' → '#8b5cf6').
-// Assim as cores ficam definidas num lugar só, e o gráfico usa as mesmas do resto do site.
-function lerCor(nome) {
-  if (typeof document === 'undefined') return '#888'
-  return getComputedStyle(document.documentElement).getPropertyValue(nome).trim()
-}
 
 // Monta as fatias: [{ ticker, valor, percentual, cor }]
 // - posicoes chega na ordem da carteira (ordem de cadastro)

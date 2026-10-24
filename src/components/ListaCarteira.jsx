@@ -9,7 +9,8 @@ import './ListaCarteira.css'
 // - carregando: true enquanto as cotações chegam
 // - erros: { PETR4: 'mensagem' } com as cotações que falharam
 // - aoEditar, aoRemover: funções do App
-function ListaCarteira({ posicoes, carregando, erros, aoEditar, aoRemover }) {
+// - aoAbrirHistorico(ticker): chamado ao clicar num ativo
+function ListaCarteira({ posicoes, carregando, erros, aoEditar, aoRemover, aoAbrirHistorico }) {
   // Estado de carteira vazia: em vez de uma tabela sem nada, um convite para começar
   if (posicoes.length === 0) {
     return (
@@ -54,6 +55,7 @@ function ListaCarteira({ posicoes, carregando, erros, aoEditar, aoRemover }) {
               erro={erros[posicao.ticker]}
               aoEditar={aoEditar}
               aoRemover={aoRemover}
+              aoAbrirHistorico={aoAbrirHistorico}
             />
           ))}
         </tbody>

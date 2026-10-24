@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Dinheiro from './Dinheiro.jsx'
 import Pilula from './Pilula.jsx'
+import LogoAtivo from './LogoAtivo.jsx'
 import {
   formatarMoeda,
   formatarMoedaComSinal,
@@ -20,11 +21,11 @@ import {
 // - carregando: true enquanto as cotações estão sendo buscadas
 // - erro: mensagem de erro da cotação deste ticker (se houver)
 // - aoEditar(id, mudancas) e aoRemover(id): funções do App
-function LinhaAtivo({ posicao, carregando, erro, aoEditar, aoRemover }) {
+// - aoAbrirHistorico(ticker): abre o painel com o gráfico de evolução do preço
+function LinhaAtivo({ posicao, carregando, erro, aoEditar, aoRemover, aoAbrirHistorico }) {
   const [modo, setModo] = useState('ver')
   const [rascunho, setRascunho] = useState({ quantidade: '', precoMedio: '' })
   const [erroEdicao, setErroEdicao] = useState('')
-  const [logoQuebrado, setLogoQuebrado] = useState(false)
 
   const { cotacao, ticker } = posicao
 
@@ -81,15 +82,13 @@ function LinhaAtivo({ posicao, carregando, erro, aoEditar, aoRemover }) {
 
   // ---------- Partes da linha ----------
 
-  // Logo da empresa (vem da brapi). Se não carregar, mostramos as iniciais.
-  const logo =
-    cotacao?.logo && !logoQuebrado ? (
-      <img className="ativo__logo" src={cotacao.logo} alt="" loading="lazy" onError={() => setLogoQuebrado(true)} />
-    ) : (
-      <span className="ativo__logo ativo__logo--iniciais" aria-hidden="true">
-        {ticker.slice(0, 2)}
-      </span>
-    )
+  // Clicar na linha (com o mouse) abre o histórico. Ignoramos cliques em botões e campos
+  // (editar, remover, salvar...) para não abrir o painel por engano.
+  // Quem usa o teclado abre pelo botão do ativo, que é focável com Tab.
+  function aoClicarNaLinha(evento) {
+    if (modo !== 'ver' || evento.target.closest('button, input, a, form')) return
+    aoAbrirHistorico(ticker)
+  }
 
   // Preço atual: esqueleto enquanto carrega, aviso se deu erro
   let precoAtual
@@ -115,7 +114,8 @@ function LinhaAtivo({ posicao, carregando, erro, aoEditar, aoRemover }) {
 
   return (
     <tr
-      className={`linha ${piscar ? `linha--piscar-${piscar}` : ''}`}
+      className={`linha ${modo === 'ver' ? 'linha--clicavel' : ''} ${piscar ? `linha--piscar-${piscar}` : ''}`}
+      onClick={aoClicarNaLinha}
       onKeyDown={aoApertarTecla}
       // Quando a animação CSS termina, tiramos a classe para poder piscar de novo depois
       // (o "if" ignora animações de elementos de dentro da linha, como o esqueleto)
@@ -125,13 +125,19 @@ function LinhaAtivo({ posicao, carregando, erro, aoEditar, aoRemover }) {
     >
       {/* Coluna do ativo: logo, ticker e nome da empresa */}
       <th scope="row" className="linha__ativo">
-        <div className="ativo">
-          {logo}
-          <div className="ativo__textos">
+        {/* É um botão de verdade (e não só um clique na linha) para funcionar com Tab e Enter */}
+        <button
+          type="button"
+          className="ativo ativo--botao"
+          onClick={() => aoAbrirHistorico(ticker)}
+          aria-label={`Ver evolução de ${ticker} nos últimos 3 meses`}
+        >
+          <LogoAtivo ticker={ticker} logo={cotacao?.logo} />
+          <span className="ativo__textos">
             <span className="ativo__ticker">{ticker}</span>
             <span className="ativo__nome">{cotacao?.nome ?? '—'}</span>
-          </div>
-        </div>
+          </span>
+        </button>
       </th>
 
       {emEdicao ? (
