@@ -1,3 +1,4 @@
+import { useMoeda } from '../hooks/useMoeda.js'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   Chart as ChartJS,
@@ -15,7 +16,7 @@ import Pilula from './Pilula.jsx'
 import { buscarHistorico } from '../services/brapi.js'
 import { prefereMenosMovimento } from '../hooks/useNumeroAnimado.js'
 import { lerCor } from '../utils/cores.js'
-import { formatarMoeda, formatarPorcentagem } from '../utils/formatacao.js'
+import { formatarPorcentagem } from '../utils/formatacao.js'
 import './PainelHistorico.css'
 
 // Registramos só as partes do Chart.js que o gráfico de linha usa:
@@ -38,6 +39,8 @@ const formatarDataCompleta = (ms) =>
 // - posicao: o ativo com os cálculos (ticker, precoMedio, cotacao...)
 // - aoFechar: chamado quando o painel é fechado (por qualquer caminho)
 function PainelHistorico({ posicao, aoFechar }) {
+  // moeda(v) já respeita o modo privacidade (mostra "R$ •••••" quando ligado)
+  const { moeda } = useMoeda()
   const { ticker, precoMedio, cotacao } = posicao
   const refDialogo = useRef(null)
   const [estado, setEstado] = useState({ status: 'carregando', historico: [], erro: '' })
@@ -143,7 +146,7 @@ function PainelHistorico({ posicao, aoFechar }) {
             <dl className="painel__numeros">
               <div className="indicador">
                 <dt className="indicador__rotulo">Preço atual</dt>
-                <dd className="indicador__valor">{formatarMoeda(cotacao?.preco ?? resumo.ultimo)}</dd>
+                <dd className="indicador__valor">{moeda(cotacao?.preco ?? resumo.ultimo)}</dd>
               </div>
               <div className="indicador">
                 <dt className="indicador__rotulo">Variação em 3 meses</dt>
@@ -153,11 +156,11 @@ function PainelHistorico({ posicao, aoFechar }) {
               </div>
               <div className="indicador">
                 <dt className="indicador__rotulo">Mínima</dt>
-                <dd className="indicador__valor">{formatarMoeda(resumo.minimo)}</dd>
+                <dd className="indicador__valor">{moeda(resumo.minimo)}</dd>
               </div>
               <div className="indicador">
                 <dt className="indicador__rotulo">Máxima</dt>
-                <dd className="indicador__valor">{formatarMoeda(resumo.maximo)}</dd>
+                <dd className="indicador__valor">{moeda(resumo.maximo)}</dd>
               </div>
             </dl>
 
@@ -180,7 +183,7 @@ function PainelHistorico({ posicao, aoFechar }) {
                     {[...estado.historico].reverse().map((ponto) => (
                       <tr key={ponto.data}>
                         <td>{formatarDataCompleta(ponto.data)}</td>
-                        <td>{formatarMoeda(ponto.fechamento)}</td>
+                        <td>{moeda(ponto.fechamento)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -196,6 +199,7 @@ function PainelHistorico({ posicao, aoFechar }) {
 
 // O gráfico em si. Fica separado para o PainelHistorico ficar mais fácil de ler.
 function GraficoLinha({ ticker, historico, precoMedio, resumo }) {
+  const { moeda } = useMoeda()
   const corLinha = lerCor('--cor-grafico-1')
   const corReferencia = lerCor('--cor-texto-secundario')
   const corGrade = lerCor('--cor-borda')
@@ -259,7 +263,7 @@ function GraficoLinha({ ticker, historico, precoMedio, resumo }) {
         callbacks: {
           // Título do balão: data completa do dia
           title: (itens) => formatarDataCompleta(historico[itens[0].dataIndex].data),
-          label: (item) => ` ${item.dataset.label}: ${formatarMoeda(item.parsed.y)}`,
+          label: (item) => ` ${item.dataset.label}: ${moeda(item.parsed.y)}`,
         },
       },
     },
@@ -273,15 +277,15 @@ function GraficoLinha({ ticker, historico, precoMedio, resumo }) {
         grace: '5%', // folga em cima e embaixo para a linha não encostar nas bordas
         grid: { color: corGrade },
         border: { display: false },
-        ticks: { color: corReferencia, callback: (valor) => formatarMoeda(valor).replace(/\s/g, ' ') },
+        ticks: { color: corReferencia, callback: (valor) => moeda(valor).replace(/\s/g, ' ') },
       },
     },
   }
 
   const descricao =
     `Gráfico de linha do preço de ${ticker} entre ${formatarDiaMes(resumo.inicio)} e ${formatarDiaMes(resumo.fim)}: ` +
-    `de ${formatarMoeda(resumo.primeiro)} a ${formatarMoeda(resumo.ultimo)} (${formatarPorcentagem(resumo.variacao)}). ` +
-    `Seu preço médio é ${formatarMoeda(precoMedio)}.`
+    `de ${moeda(resumo.primeiro)} a ${moeda(resumo.ultimo)} (${formatarPorcentagem(resumo.variacao)}). ` +
+    `Seu preço médio é ${moeda(precoMedio)}.`
 
   return (
     <figure className="painel__figura">
@@ -297,7 +301,7 @@ function GraficoLinha({ ticker, historico, precoMedio, resumo }) {
         </span>
         <span className="painel__legenda-item">
           <span className="painel__traco painel__traco--tracejado" style={{ borderColor: corReferencia }} aria-hidden="true" />
-          Seu preço médio ({formatarMoeda(precoMedio)})
+          Seu preço médio ({moeda(precoMedio)})
         </span>
       </figcaption>
     </figure>

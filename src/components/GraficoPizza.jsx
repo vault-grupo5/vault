@@ -1,8 +1,9 @@
+import { useMoeda } from '../hooks/useMoeda.js'
 import { useMemo, useRef } from 'react'
 import { Chart as ChartJS, ArcElement, Tooltip } from 'chart.js'
 import { Pie } from 'react-chartjs-2'
 import { calcularDistribuicao } from '../utils/calculos.js'
-import { formatarMoeda, formatarPorcentagem } from '../utils/formatacao.js'
+import { formatarPorcentagem } from '../utils/formatacao.js'
 import { lerCor } from '../utils/cores.js'
 import './GraficoPizza.css'
 
@@ -52,6 +53,8 @@ function montarFatias(posicoes) {
 // Gráfico de pizza com a distribuição da carteira + legenda com os valores.
 // - posicoes: ativos com os cálculos feitos (de calcularPosicoes)
 function GraficoPizza({ posicoes }) {
+  // moeda(v) já respeita o modo privacidade (mostra "R$ •••••" quando ligado)
+  const { moeda } = useMoeda()
   const refGrafico = useRef(null)
   // A distribuição só é recalculada quando a carteira muda...
   const fatiasBase = useMemo(() => montarFatias(posicoes), [posicoes])
@@ -101,7 +104,7 @@ function GraficoPizza({ posicoes }) {
           // Texto do balão: "R$ 3.312,00 · 82,50%"
           label: (contexto) => {
             const fatia = fatias[contexto.dataIndex]
-            return ` ${formatarMoeda(fatia.valor)} · ${formatarParticipacao(fatia.percentual)}`
+            return ` ${moeda(fatia.valor)} · ${formatarParticipacao(fatia.percentual)}`
           },
         },
       },
@@ -144,7 +147,7 @@ function GraficoPizza({ posicoes }) {
             <span className="legenda__cor" style={{ background: fatia.cor }} aria-hidden="true" />
             <span className="legenda__ticker">{fatia.ticker}</span>
             <span className="legenda__percentual">{formatarParticipacao(fatia.percentual)}</span>
-            <span className="legenda__valor">{formatarMoeda(fatia.valor)}</span>
+            <span className="legenda__valor">{moeda(fatia.valor)}</span>
           </li>
         ))}
       </ul>

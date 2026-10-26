@@ -301,3 +301,10 @@ p {
     scroll-behavior: auto !important;
   }
 }
+
+/* Botão de liga/desliga quando está LIGADO (ex: modo privacidade): fica roxo */
+.botao--ligado {
+  color: var(--cor-destaque-claro);
+  border-color: var(--cor-destaque);
+  background: var(--cor-destaque-fundo);
+}

@@ -15,8 +15,8 @@ import './Layout.css'
 // Props:
 // - carteira: o objeto do hook useCarteira (dados e ações)
 // - tema / aoAlternarTema: tema claro/escuro
-// - acoesExtras: botões extras para a barra do topo (ex: privacidade)
-function Layout({ carteira, tema, aoAlternarTema, acoesExtras }) {
+// - ocultarValores / aoAlternarPrivacidade: modo privacidade
+function Layout({ carteira, tema, aoAlternarTema, ocultarValores, aoAlternarPrivacidade }) {
   const local = useLocation()
   const primeiraVez = useRef(true)
 
@@ -58,9 +58,9 @@ function Layout({ carteira, tema, aoAlternarTema, acoesExtras }) {
           aoExportar={carteira.exportarCarteira}
           tema={tema}
           aoAlternarTema={aoAlternarTema}
-        >
-          {acoesExtras}
-        </Cabecalho>
+          ocultarValores={ocultarValores}
+          aoAlternarPrivacidade={aoAlternarPrivacidade}
+        />
 
         {carteira.falhaGeral && (
           <BannerErro

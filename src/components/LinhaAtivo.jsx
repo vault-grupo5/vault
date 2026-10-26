@@ -1,16 +1,11 @@
+import { useMoeda } from '../hooks/useMoeda.js'
 import { useState } from 'react'
 import { Pencil, Trash2, TriangleAlert } from 'lucide-react'
 import Dinheiro from './Dinheiro.jsx'
 import Pilula from './Pilula.jsx'
 import LogoAtivo from './LogoAtivo.jsx'
 import { ehExemplo } from '../utils/carteiraExemplo.js'
-import {
-  formatarMoeda,
-  formatarMoedaComSinal,
-  formatarPorcentagem,
-  formatarQuantidade,
-  lerNumero,
-} from '../utils/formatacao.js'
+import { formatarPorcentagem, formatarQuantidade, lerNumero } from '../utils/formatacao.js'
 
 // Uma linha da tabela de ativos.
 // A linha tem 3 "modos":
@@ -25,6 +20,8 @@ import {
 // - aoEditar(id, mudancas) e aoRemover(id): funções do App
 // - aoAbrirHistorico(ticker): abre o painel com o gráfico de evolução do preço
 function LinhaAtivo({ posicao, carregando, erro, aoEditar, aoRemover, aoAbrirHistorico }) {
+  // moeda(v) já respeita o modo privacidade (mostra "R$ •••••" quando ligado)
+  const { moeda, moedaComSinal } = useMoeda()
   const [modo, setModo] = useState('ver')
   const [rascunho, setRascunho] = useState({ quantidade: '', precoMedio: '' })
   const [erroEdicao, setErroEdicao] = useState('')
@@ -97,7 +94,7 @@ function LinhaAtivo({ posicao, carregando, erro, aoEditar, aoRemover, aoAbrirHis
   if (posicao.temCotacao) {
     precoAtual = (
       <>
-        <span>{formatarMoeda(posicao.precoAtual)}</span>
+        <span>{moeda(posicao.precoAtual)}</span>
         <Pilula valor={cotacao.variacaoDia}>{formatarPorcentagem(cotacao.variacaoDia)}</Pilula>
       </>
     )
@@ -185,7 +182,7 @@ function LinhaAtivo({ posicao, carregando, erro, aoEditar, aoRemover, aoAbrirHis
       ) : (
         <>
           <td data-rotulo="Quantidade">{formatarQuantidade(posicao.quantidade)}</td>
-          <td data-rotulo="Preço médio">{formatarMoeda(posicao.precoMedio)}</td>
+          <td data-rotulo="Preço médio">{moeda(posicao.precoMedio)}</td>
         </>
       )}
 
@@ -201,7 +198,7 @@ function LinhaAtivo({ posicao, carregando, erro, aoEditar, aoRemover, aoAbrirHis
         {posicao.temCotacao ? (
           <div className="linha__lucro">
             <span className={`texto--${posicao.lucro >= 0 ? 'ganho' : 'perda'}`}>
-              {formatarMoedaComSinal(posicao.lucro)}
+              {moedaComSinal(posicao.lucro)}
             </span>
             <Pilula valor={posicao.lucroPercentual}>{formatarPorcentagem(posicao.lucroPercentual)}</Pilula>
           </div>

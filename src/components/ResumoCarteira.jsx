@@ -1,7 +1,8 @@
+import { useMoeda } from '../hooks/useMoeda.js'
 import { TriangleAlert } from 'lucide-react'
 import Dinheiro from './Dinheiro.jsx'
 import Pilula from './Pilula.jsx'
-import { formatarMoeda, formatarMoedaComSinal, formatarPorcentagem } from '../utils/formatacao.js'
+import { formatarPorcentagem } from '../utils/formatacao.js'
 import { useNumeroAnimado } from '../hooks/useNumeroAnimado.js'
 import './ResumoCarteira.css'
 
@@ -12,6 +13,8 @@ import './ResumoCarteira.css'
 // - resumo: objeto de calcularResumo() (utils/calculos.js)
 // - carregando: true enquanto as cotações chegam pela primeira vez
 function ResumoCarteira({ resumo, carregando }) {
+  // moeda(v) já respeita o modo privacidade (mostra "R$ •••••" quando ligado)
+  const { moeda, moedaComSinal } = useMoeda()
   // O total "corre" até o valor novo quando muda (ver hooks/useNumeroAnimado.js)
   const totalAnimado = useNumeroAnimado(resumo.valorAtual)
   const vazia = resumo.quantidadeAtivos === 0
@@ -36,7 +39,7 @@ function ResumoCarteira({ resumo, carregando }) {
         {!vazia && !esperandoCotacoes && (
           <div className="resumo__pilulas">
             <Pilula valor={resumo.lucro}>
-              {formatarMoedaComSinal(resumo.lucro)} ({formatarPorcentagem(resumo.lucroPercentual)})
+              {moedaComSinal(resumo.lucro)} ({formatarPorcentagem(resumo.lucroPercentual)})
             </Pilula>
             <span className="resumo__desde">desde a compra</span>
           </div>
@@ -57,13 +60,13 @@ function ResumoCarteira({ resumo, carregando }) {
       <dl className="resumo__indicadores">
         <div className="indicador">
           <dt className="indicador__rotulo">Total investido</dt>
-          <dd className="indicador__valor">{formatarMoeda(resumo.valorInvestido)}</dd>
+          <dd className="indicador__valor">{moeda(resumo.valorInvestido)}</dd>
         </div>
 
         <div className="indicador">
           <dt className="indicador__rotulo">Lucro / prejuízo</dt>
           <dd className={`indicador__valor texto--${tipoTexto(resumo.lucro)}`}>
-            {formatarMoedaComSinal(resumo.lucro)}
+            {moedaComSinal(resumo.lucro)}
           </dd>
         </div>
 
@@ -71,7 +74,7 @@ function ResumoCarteira({ resumo, carregando }) {
           <dt className="indicador__rotulo">Hoje</dt>
           <dd className="indicador__valor indicador__valor--hoje">
             <span className={`texto--${tipoTexto(resumo.variacaoDia)}`}>
-              {formatarMoedaComSinal(resumo.variacaoDia)}
+              {moedaComSinal(resumo.variacaoDia)}
             </span>
             <Pilula valor={resumo.variacaoDiaPercentual}>{formatarPorcentagem(resumo.variacaoDiaPercentual)}</Pilula>
           </dd>

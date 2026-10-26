@@ -5,6 +5,8 @@ import MeusAtivos from './paginas/MeusAtivos.jsx'
 import Analises from './paginas/Analises.jsx'
 import { useCarteira } from './hooks/useCarteira.js'
 import { useTema } from './hooks/useTema.js'
+import { usePrivacidade } from './hooks/usePrivacidade.js'
+import { PrivacidadeContexto } from './hooks/useMoeda.js'
 
 // Componente principal: cria o estado da carteira (uma vez só) e define as páginas.
 //
@@ -15,20 +17,34 @@ import { useTema } from './hooks/useTema.js'
 function App() {
   const carteira = useCarteira()
   const { tema, alternar: alternarTema } = useTema()
+  const { ocultar, alternar: alternarPrivacidade } = usePrivacidade()
+
+  const layout = (
+    <Layout
+      carteira={carteira}
+      tema={tema}
+      aoAlternarTema={alternarTema}
+      ocultarValores={ocultar}
+      aoAlternarPrivacidade={alternarPrivacidade}
+    />
+  )
 
   return (
-    <HashRouter>
-      <Routes>
-        {/* Rota "pai": o Layout (menu, topo, rodapé) envolve todas as páginas */}
-        <Route element={<Layout carteira={carteira} tema={tema} aoAlternarTema={alternarTema} />}>
-          <Route index element={<VisaoGeral carteira={carteira} />} />
-          <Route path="ativos" element={<MeusAtivos carteira={carteira} />} />
-          <Route path="analises" element={<Analises carteira={carteira} />} />
-          {/* Endereço que não existe: volta para a visão geral */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Route>
-      </Routes>
-    </HashRouter>
+    // O Provider "espalha" o modo privacidade para todos os componentes de dentro (ver hooks/useMoeda.js)
+    <PrivacidadeContexto.Provider value={ocultar}>
+      <HashRouter>
+        <Routes>
+          {/* Rota "pai": o Layout (menu, topo, rodapé) envolve todas as páginas */}
+          <Route element={layout}>
+            <Route index element={<VisaoGeral carteira={carteira} />} />
+            <Route path="ativos" element={<MeusAtivos carteira={carteira} />} />
+            <Route path="analises" element={<Analises carteira={carteira} />} />
+            {/* Endereço que não existe: volta para a visão geral */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
+        </Routes>
+      </HashRouter>
+    </PrivacidadeContexto.Provider>
   )
 }
 

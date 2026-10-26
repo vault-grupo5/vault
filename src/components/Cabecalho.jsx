@@ -1,10 +1,10 @@
-import { Download, Moon, RefreshCw, Sun } from 'lucide-react'
+import { Download, Eye, EyeOff, Moon, RefreshCw, Sun } from 'lucide-react'
 import Logo from './Logo.jsx'
 import { formatarHorario } from '../utils/formatacao.js'
 import './Cabecalho.css'
 
 // Barra do topo, igual em todas as páginas: indicador "ao vivo" e as ações gerais do site
-// (atualizar cotações, exportar CSV e trocar o tema).
+// (atualizar cotações, privacidade, exportar CSV e trocar o tema).
 // No celular mostra também o logo, porque lá não existe o menu lateral.
 //
 // Props:
@@ -13,8 +13,18 @@ import './Cabecalho.css'
 // - temAtivos: false com a carteira vazia (aí não há o que atualizar nem exportar)
 // - aoAtualizar, aoExportar: ações dos botões
 // - tema ("claro" ou "escuro") e aoAlternarTema: botão que troca o tema
-// - children: botões extras (ex: o de privacidade), colocados junto com os outros
-function Cabecalho({ horarioCotacao, atualizando = false, temAtivos, aoAtualizar, aoExportar, tema, aoAlternarTema, children }) {
+// - ocultarValores e aoAlternarPrivacidade: modo privacidade (esconde os valores em R$)
+function Cabecalho({
+  horarioCotacao,
+  atualizando = false,
+  temAtivos,
+  aoAtualizar,
+  aoExportar,
+  tema,
+  aoAlternarTema,
+  ocultarValores,
+  aoAlternarPrivacidade,
+}) {
   const temaClaro = tema === 'claro'
   const horario = formatarHorario(horarioCotacao)
 
@@ -45,7 +55,18 @@ function Cabecalho({ horarioCotacao, atualizando = false, temAtivos, aoAtualizar
           </button>
         )}
 
-        {children}
+        {/* Modo privacidade. aria-pressed diz ao leitor de tela se o botão está "ligado" ou "desligado";
+            por isso o nome do botão é sempre o mesmo e só o estado muda. */}
+        <button
+          type="button"
+          className={`botao botao--fantasma botao--icone ${ocultarValores ? 'botao--ligado' : ''}`}
+          onClick={aoAlternarPrivacidade}
+          aria-pressed={ocultarValores}
+          aria-label="Ocultar valores"
+          title={ocultarValores ? 'Mostrar os valores em reais' : 'Esconder os valores em reais'}
+        >
+          {ocultarValores ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
+        </button>
 
         {temAtivos && (
           <button
