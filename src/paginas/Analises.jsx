@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import GraficoEvolucao from '../components/GraficoEvolucao.jsx'
 import GraficoComparacao from '../components/GraficoComparacao.jsx'
+import GraficoRentabilidade from '../components/GraficoRentabilidade.jsx'
 import { useHistoricos } from '../hooks/useHistoricos.js'
 import { useTituloDaPagina } from '../hooks/useTituloDaPagina.js'
 import { calcularEvolucao, compararComIndice } from '../utils/evolucao.js'
@@ -91,6 +92,16 @@ function Analises({ carteira }) {
               {historicos.erros[IBOVESPA] ? `: ${historicos.erros[IBOVESPA]}` : ' (histórico insuficiente).'}
             </p>
           )}
+        </section>
+      )}
+
+      {/* Rentabilidade por ativo: usa as cotações atuais (não depende do histórico) */}
+      {!vazia && (
+        <section className="cartao" aria-labelledby="titulo-rentabilidade">
+          <h2 className="cartao__titulo" id="titulo-rentabilidade">
+            Rentabilidade por ativo
+          </h2>
+          <GraficoRentabilidade posicoes={carteira.posicoes} />
         </section>
       )}
     </div>

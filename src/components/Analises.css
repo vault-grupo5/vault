@@ -144,3 +144,8 @@
 .analise__traco--tracejado {
   border-top-style: dashed;
 }
+
+/* Gráfico de barras: a altura é definida no próprio componente (cresce com o número de ativos) */
+.analise__barras {
+  position: relative;
+}
