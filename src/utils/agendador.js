@@ -49,6 +49,9 @@ export function criarAgendador({
     if (parado || documento.hidden) return
     try {
       await aoAtualizar()
+    } catch {
+      // Se a atualização falhar, não deixamos o erro "escapar" (ninguém está esperando por ele):
+      // a próxima tentativa simplesmente acontece no próximo intervalo.
     } finally {
       // Mesmo se der erro, contamos a tentativa: a próxima vem só depois de um intervalo inteiro
       // (senão um erro persistente viraria um laço de requisições sem parar)
