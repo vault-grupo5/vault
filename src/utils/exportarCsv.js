@@ -10,7 +10,7 @@
 
 const SEPARADOR = ';'
 const QUEBRA_DE_LINHA = '\r\n'
-const BOM_UTF8 = '﻿'
+const BOM_UTF8 = '\uFEFF'
 
 // 1234.5 → "1234,50"   (null/undefined → vazio)
 function numero(valor) {

@@ -11,9 +11,9 @@ import {
   tipoVariacao,
 } from './formatacao.js'
 
-// O Intl põe um espaço "não separável" ( ) entre R$ e o número, para não quebrar a linha ali.
+// O Intl põe um espaço "não separável" (U+00A0) entre R$ e o número, para não quebrar a linha ali.
 // Trocamos por um espaço comum para o teste ficar legível.
-const comEspacoNormal = (texto) => texto.replace(/ /g, ' ')
+const comEspacoNormal = (texto) => texto.replace(/\u00a0/g, ' ')
 
 describe('formatarMoeda', () => {
   it('usa R$, ponto no milhar e vírgula nos centavos', () => {
