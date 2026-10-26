@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import Navegacao from './Navegacao.jsx'
 import Cabecalho from './Cabecalho.jsx'
 import BannerErro from './BannerErro.jsx'
+import AvisoExemplo from './AvisoExemplo.jsx'
 import Aviso from './Aviso.jsx'
 import { INTERVALO_ATUALIZACAO_MS } from '../hooks/useCarteira.js'
 import { formatarHorario } from '../utils/formatacao.js'
@@ -67,6 +68,8 @@ function Layout({ carteira, tema, aoAlternarTema, acoesExtras }) {
             aoTentarDeNovo={() => carteira.atualizarCotacoes({ ignorarCache: true })}
           />
         )}
+
+        {carteira.temExemplo && <AvisoExemplo aoLimpar={carteira.limparExemplo} />}
 
         {/* tabIndex -1: permite receber foco pelo "Pular para o conteúdo", sem entrar na ordem do Tab */}
         <main id="conteudo" className="estrutura__conteudo" tabIndex={-1}>

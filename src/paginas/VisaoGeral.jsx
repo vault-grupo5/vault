@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Plus } from 'lucide-react'
+import { FlaskConical, Plus } from 'lucide-react'
 import ResumoCarteira from '../components/ResumoCarteira.jsx'
 import GraficoPizza from '../components/GraficoPizza.jsx'
 import { useTituloDaPagina } from '../hooks/useTituloDaPagina.js'
@@ -41,6 +41,10 @@ function VisaoGeral({ carteira }) {
             <Link className="botao botao--primario" to="/ativos">
               <Plus size={18} aria-hidden="true" /> Cadastrar ativo
             </Link>
+            {/* Para conhecer o VAULT sem cadastrar nada: carrega ativos fictícios (ver utils/carteiraExemplo.js) */}
+            <button type="button" className="botao botao--fantasma" onClick={carteira.carregarExemplo}>
+              <FlaskConical size={18} aria-hidden="true" /> Ver carteira de exemplo
+            </button>
           </div>
         </section>
       ) : (

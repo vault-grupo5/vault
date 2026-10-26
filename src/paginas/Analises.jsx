@@ -27,6 +27,9 @@ function Analises({ carteira }) {
             <Link className="botao botao--primario" to="/ativos">
               Cadastrar ativo
             </Link>
+            <button type="button" className="botao botao--fantasma" onClick={carteira.carregarExemplo}>
+              Ver carteira de exemplo
+            </button>
           </div>
         </section>
       ) : (

@@ -13,6 +13,7 @@ import './ListaCarteira.css'
 // - erros: { PETR4: 'mensagem' } com as cotações que falharam
 // - aoEditar, aoRemover: funções do App
 // - aoAbrirHistorico(ticker): chamado ao clicar num ativo
+// - aoCarregarExemplo: carrega a carteira de exemplo (botão da carteira vazia)
 function ListaCarteira({
   posicoes,
   ordem,
@@ -22,6 +23,7 @@ function ListaCarteira({
   aoEditar,
   aoRemover,
   aoAbrirHistorico,
+  aoCarregarExemplo,
 }) {
   // Estado de carteira vazia: em vez de uma tabela sem nada, um convite para começar
   if (posicoes.length === 0) {
@@ -40,6 +42,9 @@ function ListaCarteira({
           onClick={() => document.getElementById('campo-ticker')?.focus()}
         >
           Adicionar ativo
+        </button>
+        <button type="button" className="botao botao--fantasma" onClick={aoCarregarExemplo}>
+          Ver carteira de exemplo
         </button>
       </div>
     )

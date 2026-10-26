@@ -49,6 +49,7 @@ function MeusAtivos({ carteira }) {
             aoEditar={carteira.editarAtivo}
             aoRemover={carteira.removerAtivo}
             aoAbrirHistorico={setTickerAberto}
+            aoCarregarExemplo={carteira.carregarExemplo}
           />
         </section>
       </div>

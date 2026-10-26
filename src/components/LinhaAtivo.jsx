@@ -3,6 +3,7 @@ import { Pencil, Trash2, TriangleAlert } from 'lucide-react'
 import Dinheiro from './Dinheiro.jsx'
 import Pilula from './Pilula.jsx'
 import LogoAtivo from './LogoAtivo.jsx'
+import { ehExemplo } from '../utils/carteiraExemplo.js'
 import {
   formatarMoeda,
   formatarMoedaComSinal,
@@ -135,7 +136,11 @@ function LinhaAtivo({ posicao, carregando, erro, aoEditar, aoRemover, aoAbrirHis
         >
           <LogoAtivo ticker={ticker} logo={cotacao?.logo} />
           <span className="ativo__textos">
-            <span className="ativo__ticker">{ticker}</span>
+            <span className="ativo__ticker">
+              {ticker}
+              {/* Ativo da carteira de demonstração (ver utils/carteiraExemplo.js) */}
+              {ehExemplo(posicao) && <span className="etiqueta">Exemplo</span>}
+            </span>
             <span className="ativo__nome">{cotacao?.nome ?? '—'}</span>
           </span>
         </button>

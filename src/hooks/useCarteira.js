@@ -4,6 +4,7 @@ import { carregarCarteira, salvarCarteira } from '../utils/storage.js'
 import { calcularPosicoes, calcularResumo } from '../utils/calculos.js'
 import { carregarOrdenacao, ordenarPosicoes, salvarOrdenacao } from '../utils/ordenacao.js'
 import { baixarArquivoCsv, gerarCsv, nomeDoArquivoCsv } from '../utils/exportarCsv.js'
+import { criarCarteiraExemplo, ehExemplo } from '../utils/carteiraExemplo.js'
 import { buscarCotacoes } from '../services/brapi.js'
 
 // De quanto em quanto tempo as cotações são atualizadas sozinhas.
@@ -124,6 +125,30 @@ export function useCarteira() {
     if (ativo) mostrarAviso(`${ativo.ticker} removido da carteira`, 'remocao')
   }
 
+  // ---------- Carteira de exemplo ----------
+
+  const temExemplo = ativos.some(ehExemplo)
+
+  // Carrega os ativos fictícios. O botão só aparece com a carteira vazia, mas por segurança:
+  // se houver ativos reais, NADA é substituído sem a pessoa confirmar.
+  function carregarExemplo() {
+    const reais = ativos.filter((a) => !ehExemplo(a))
+    if (reais.length > 0) {
+      const confirmou = window.confirm(
+        `Você já tem ${reais.length} ativo(s) na carteira. Carregar o exemplo vai APAGAR esses ativos. Continuar?`,
+      )
+      if (!confirmou) return
+    }
+    setAtivos(criarCarteiraExemplo())
+    mostrarAviso('Carteira de exemplo carregada', 'sucesso')
+  }
+
+  // Remove só os ativos de exemplo. Ativos reais cadastrados depois continuam.
+  function limparExemplo() {
+    setAtivos((atuais) => atuais.filter((a) => !ehExemplo(a)))
+    mostrarAviso('Carteira de exemplo removida', 'remocao')
+  }
+
   // ---------- Valores calculados ----------
   // useMemo: só recalcula quando os ativos ou as cotações mudam
   const posicoes = useMemo(() => calcularPosicoes(ativos, cotacoes), [ativos, cotacoes])
@@ -169,12 +194,15 @@ export function useCarteira() {
     mensagemErroGeral: mensagensErro[0],
     ordem,
     aviso,
+    temExemplo,
     // ações
     adicionarAtivo,
     editarAtivo,
     removerAtivo,
     mudarOrdem,
     exportarCarteira,
+    carregarExemplo,
+    limparExemplo,
     atualizarCotacoes,
     mostrarAviso,
     fecharAviso,

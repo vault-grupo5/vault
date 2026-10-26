@@ -229,6 +229,20 @@ p {
   background: rgba(139, 139, 163, 0.15);
 }
 
+/* ---------- Etiqueta pequena (ex: "Exemplo" na lista de ativos) ---------- */
+
+.etiqueta {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: var(--raio-pilula);
+  font-size: 0.7rem;
+  font-weight: 600;
+  vertical-align: middle;
+  color: var(--cor-destaque-claro);
+  background: var(--cor-destaque-fundo);
+}
+
 /* ---------- Cores de texto para ganho/perda ---------- */
 
 .texto--ganho {
