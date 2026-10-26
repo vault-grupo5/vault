@@ -112,3 +112,35 @@
 .analise__tabela tbody tr + tr td {
   border-top: 1px solid var(--cor-borda);
 }
+
+/* ---------- Legenda em HTML (gráficos com mais de uma linha) ---------- */
+
+.analise__figura {
+  margin: 0;
+}
+
+.analise__legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: var(--cor-texto-secundario);
+}
+
+.analise__legenda-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Amostra do traço da linha: contínuo ou tracejado */
+.analise__traco {
+  display: inline-block;
+  width: 24px;
+  border-top: 3px solid;
+}
+
+.analise__traco--tracejado {
+  border-top-style: dashed;
+}

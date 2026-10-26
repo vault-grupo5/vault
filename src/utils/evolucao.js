@@ -75,3 +75,41 @@ export function variacaoDoPeriodo(pontos) {
   if (pontos.length < 2 || pontos[0].valor === 0) return 0
   return (pontos.at(-1).valor / pontos[0].valor - 1) * 100
 }
+
+// Compara a carteira com um índice (ex: Ibovespa) no MESMO período, em %.
+// Os dois começam em 0% no primeiro dia da evolução da carteira; cada ponto mostra quanto
+// a carteira e o índice tinham subido (ou caído) desde aquele dia.
+//
+// - pontosCarteira: [{ data, valor }] de calcularEvolucao
+// - historicoIndice: [{ data, fechamento }] do índice (buscarHistorico('^BVSP'))
+// Devolve null se não der para comparar (falta de dados).
+// Senão: { pontos: [{ data, carteira, indice }], carteira: %, indice: %, diferenca: pontos percentuais }
+export function compararComIndice(pontosCarteira, historicoIndice) {
+  if (pontosCarteira.length < 2 || !historicoIndice?.length) return null
+
+  // Fechamento do índice por dia
+  const indicePorDia = {}
+  for (const ponto of historicoIndice) indicePorDia[chaveDoDia(ponto.data)] = ponto.fechamento
+
+  // Base do índice = fechamento no primeiro dia da carteira, ou o último antes dele
+  const primeiroDia = chaveDoDia(pontosCarteira[0].data)
+  const anteriores = historicoIndice.filter((p) => chaveDoDia(p.data) <= primeiroDia)
+  if (anteriores.length === 0) return null // o histórico do índice começa depois da carteira
+  const baseIndice = anteriores.at(-1).fechamento
+  const baseCarteira = pontosCarteira[0].valor
+  if (!baseIndice || !baseCarteira) return null
+
+  let ultimoIndice = baseIndice
+  const pontos = pontosCarteira.map((p) => {
+    const fechamento = indicePorDia[chaveDoDia(p.data)]
+    if (fechamento !== undefined) ultimoIndice = fechamento // dia sem dado: mantém o anterior
+    return {
+      data: p.data,
+      carteira: (p.valor / baseCarteira - 1) * 100,
+      indice: (ultimoIndice / baseIndice - 1) * 100,
+    }
+  })
+
+  const final = pontos.at(-1)
+  return { pontos, carteira: final.carteira, indice: final.indice, diferenca: final.carteira - final.indice }
+}

@@ -1,11 +1,15 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import GraficoEvolucao from '../components/GraficoEvolucao.jsx'
+import GraficoComparacao from '../components/GraficoComparacao.jsx'
 import { useHistoricos } from '../hooks/useHistoricos.js'
 import { useTituloDaPagina } from '../hooks/useTituloDaPagina.js'
-import { calcularEvolucao } from '../utils/evolucao.js'
+import { calcularEvolucao, compararComIndice } from '../utils/evolucao.js'
 import '../components/Analises.css'
 import './Paginas.css'
+
+// Símbolo do Ibovespa na brapi (conferido: o histórico de 3 meses vem no plano grátis)
+const IBOVESPA = '^BVSP'
 
 // Página "Análises": como a carteira se comportou nos últimos 3 meses.
 // Os históricos são buscados só quando a pessoa abre esta página (e ficam 1 hora no cache).
@@ -15,13 +19,19 @@ function Analises({ carteira }) {
   const { ativos } = carteira
   const vazia = ativos.length === 0
 
-  const tickers = useMemo(() => ativos.map((a) => a.ticker), [ativos])
+  // O Ibovespa entra na mesma lista: também passa pela fila e pelo cache de 1 hora
+  const tickers = useMemo(() => (ativos.length ? [...ativos.map((a) => a.ticker), IBOVESPA] : []), [ativos])
   const historicos = useHistoricos(tickers)
 
   // Só calculamos quando todos os históricos chegaram (evita o gráfico "crescer" durante a carga)
   const evolucao = useMemo(
     () => (historicos.carregando ? null : calcularEvolucao(ativos, historicos.historicos)),
     [ativos, historicos.carregando, historicos.historicos],
+  )
+
+  const comparacao = useMemo(
+    () => (evolucao ? compararComIndice(evolucao.pontos, historicos.historicos[IBOVESPA]) : null),
+    [evolucao, historicos.historicos],
   )
 
   return (
@@ -59,9 +69,27 @@ function Analises({ carteira }) {
             <div className="analise__carregando" role="status">
               <span className="esqueleto analise__esqueleto" />
               <p className="analise__progresso">
-                Carregando o histórico: {historicos.feitos} de {historicos.total} ativo(s)…
+                {/* total inclui o Ibovespa, buscado junto com os ativos */}
+                Carregando os históricos: {historicos.feitos} de {historicos.total}…
               </p>
             </div>
+          )}
+        </section>
+      )}
+
+      {/* Comparação com o Ibovespa: só depois que a evolução está pronta */}
+      {!vazia && evolucao && (
+        <section className="cartao" aria-labelledby="titulo-comparacao">
+          <h2 className="cartao__titulo" id="titulo-comparacao">
+            Carteira × Ibovespa
+          </h2>
+          {comparacao ? (
+            <GraficoComparacao comparacao={comparacao} />
+          ) : (
+            <p className="analise__vazio">
+              Não foi possível comparar com o Ibovespa
+              {historicos.erros[IBOVESPA] ? `: ${historicos.erros[IBOVESPA]}` : ' (histórico insuficiente).'}
+            </p>
           )}
         </section>
       )}
