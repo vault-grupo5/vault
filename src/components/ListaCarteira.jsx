@@ -1,4 +1,4 @@
-import { Download, Wallet } from 'lucide-react'
+import { Wallet } from 'lucide-react'
 import LinhaAtivo from './LinhaAtivo.jsx'
 import { OPCOES_ORDENACAO } from '../utils/ordenacao.js'
 import './ListaCarteira.css'
@@ -9,7 +9,6 @@ import './ListaCarteira.css'
 // Props:
 // - posicoes: ativos com os cálculos feitos, JÁ na ordem em que devem aparecer
 // - ordem / aoMudarOrdem(criterio): critério de ordenação escolhido e a função que o troca
-// - aoExportar: baixa a carteira em CSV
 // - carregando: true enquanto as cotações chegam
 // - erros: { PETR4: 'mensagem' } com as cotações que falharam
 // - aoEditar, aoRemover: funções do App
@@ -18,7 +17,6 @@ function ListaCarteira({
   posicoes,
   ordem,
   aoMudarOrdem,
-  aoExportar,
   carregando,
   erros,
   aoEditar,
@@ -34,10 +32,15 @@ function ListaCarteira({
         </div>
         <p className="vazio__titulo">Sua carteira está vazia</p>
         <p className="vazio__texto">Cadastre seu primeiro ativo para acompanhar o valor e o lucro em tempo real.</p>
-        {/* Link interno: leva o foco direto ao campo do ticker */}
-        <a className="botao botao--fantasma" href="#campo-ticker">
+        {/* Leva o foco direto ao campo do ticker. É botão (e não link "#campo-ticker")
+            porque com o HashRouter o # do endereço é usado para as páginas. */}
+        <button
+          type="button"
+          className="botao botao--fantasma"
+          onClick={() => document.getElementById('campo-ticker')?.focus()}
+        >
           Adicionar ativo
-        </a>
+        </button>
       </div>
     )
   }
@@ -45,10 +48,11 @@ function ListaCarteira({
   const rotuloDaOrdem = OPCOES_ORDENACAO.find((o) => o.valor === ordem)?.rotulo
 
   return (
-    <>
-      {/* Barra de ferramentas da lista: ordenar (só faz sentido com 2+ ativos) e exportar */}
-      <div className="lista__barra">
-        {posicoes.length > 1 ? (
+    <div className="lista">
+      {/* Barra de ferramentas da lista: ordenar (só faz sentido com 2+ ativos).
+          Exportar CSV fica na barra do topo, junto com as outras ações gerais. */}
+      {posicoes.length > 1 && (
+        <div className="lista__barra">
           <label className="lista__ordenar">
             <span className="campo__rotulo">Ordenar por</span>
             <select className="seletor" value={ordem} onChange={(evento) => aoMudarOrdem(evento.target.value)}>
@@ -59,14 +63,8 @@ function ListaCarteira({
               ))}
             </select>
           </label>
-        ) : (
-          <span />
-        )}
-
-        <button type="button" className="botao botao--fantasma lista__exportar" onClick={aoExportar}>
-          <Download size={16} aria-hidden="true" /> Exportar CSV
-        </button>
-      </div>
+        </div>
+      )}
 
       {/* Aviso para leitores de tela quando a ordem muda (a tabela muda sem o foco sair do seletor) */}
       <p className="sr-only" role="status">
@@ -105,7 +103,7 @@ function ListaCarteira({
           </tbody>
         </table>
       </div>
-    </>
+    </div>
   )
 }
 

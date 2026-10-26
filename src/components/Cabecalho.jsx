@@ -1,34 +1,37 @@
-import { Moon, RefreshCw, Sun } from 'lucide-react'
+import { Download, Moon, RefreshCw, Sun } from 'lucide-react'
 import Logo from './Logo.jsx'
 import { formatarHorario } from '../utils/formatacao.js'
+import './Cabecalho.css'
 
-// Cabeçalho do site: marca VAULT, título "Minha carteira" e o indicador "ao vivo".
+// Barra do topo, igual em todas as páginas: indicador "ao vivo" e as ações gerais do site
+// (atualizar cotações, exportar CSV e trocar o tema).
+// No celular mostra também o logo, porque lá não existe o menu lateral.
+//
+// Props:
 // - horarioCotacao: horário (ISO) da cotação mais recente, vindo da brapi
 // - atualizando: true enquanto as cotações estão sendo buscadas
-// - aoAtualizar: função chamada quando clica no botão "Atualizar"
+// - temAtivos: false com a carteira vazia (aí não há o que atualizar nem exportar)
+// - aoAtualizar, aoExportar: ações dos botões
 // - tema ("claro" ou "escuro") e aoAlternarTema: botão que troca o tema
-function Cabecalho({ horarioCotacao, atualizando = false, aoAtualizar, tema, aoAlternarTema }) {
+// - children: botões extras (ex: o de privacidade), colocados junto com os outros
+function Cabecalho({ horarioCotacao, atualizando = false, temAtivos, aoAtualizar, aoExportar, tema, aoAlternarTema, children }) {
   const temaClaro = tema === 'claro'
   const horario = formatarHorario(horarioCotacao)
 
   return (
-    <header className="cabecalho">
-      <div className="cabecalho__marca">
-        <Logo tamanho={40} />
-        <div>
-          <p className="cabecalho__nome">VAULT</p>
-          <h1 className="cabecalho__titulo">Minha carteira</h1>
-        </div>
+    <header className="topo">
+      <div className="topo__marca">
+        <Logo tamanho={32} comNome />
       </div>
 
-      <div className="cabecalho__acoes">
-        {/* aria-live="polite": o leitor de tela avisa quando o horário muda */}
-        <p className="ao-vivo" aria-live="polite">
-          <span className={`ao-vivo__ponto ${atualizando ? 'ao-vivo__ponto--atualizando' : ''}`} aria-hidden="true" />
-          {atualizando ? 'Atualizando…' : horario ? `Ao vivo · cotação das ${horario}` : 'Ao vivo'}
-        </p>
+      {/* aria-live="polite": o leitor de tela avisa quando o horário muda */}
+      <p className="ao-vivo" aria-live="polite">
+        <span className={`ao-vivo__ponto ${atualizando ? 'ao-vivo__ponto--atualizando' : ''}`} aria-hidden="true" />
+        {atualizando ? 'Atualizando…' : horario ? `Ao vivo, cotação das ${horario}` : 'Ao vivo'}
+      </p>
 
-        {aoAtualizar && (
+      <div className="topo__acoes">
+        {temAtivos && (
           <button
             type="button"
             className="botao botao--fantasma"
@@ -39,6 +42,21 @@ function Cabecalho({ horarioCotacao, atualizando = false, aoAtualizar, tema, aoA
             <RefreshCw size={16} aria-hidden="true" />
             {/* Em telas estreitas só o ícone aparece (o texto some, mas o aria-label mantém o nome) */}
             <span className="botao__texto">Atualizar</span>
+          </button>
+        )}
+
+        {children}
+
+        {temAtivos && (
+          <button
+            type="button"
+            className="botao botao--fantasma"
+            onClick={aoExportar}
+            aria-label="Exportar carteira em CSV"
+            title="Baixar a carteira em CSV (abre no Excel)"
+          >
+            <Download size={16} aria-hidden="true" />
+            <span className="botao__texto">Exportar CSV</span>
           </button>
         )}
 

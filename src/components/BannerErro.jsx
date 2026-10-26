@@ -1,4 +1,5 @@
 import { CircleAlert } from 'lucide-react'
+import './BannerErro.css'
 
 // Faixa de erro mostrada no topo quando NENHUMA cotação pôde ser carregada
 // (ex: sem internet ou limite da API). Tem um botão para tentar de novo.

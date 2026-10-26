@@ -1,0 +1,22 @@
+/* ---------- Banner de erro (BannerErro.jsx) ---------- */
+
+.banner-erro {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid var(--cor-perda);
+  border-radius: var(--raio);
+  background: var(--cor-perda-fundo);
+}
+
+.banner-erro__icone {
+  flex-shrink: 0;
+  color: var(--cor-perda);
+}
+
+.banner-erro__texto {
+  flex: 1 1 240px;
+  font-size: 0.9rem;
+}

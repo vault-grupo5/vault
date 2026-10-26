@@ -91,14 +91,17 @@
 }
 
 
-/* No PC: valor total à esquerda e 4 indicadores lado a lado à direita */
-@media (min-width: 960px) {
-  .resumo {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
-    align-items: center;
-  }
-
+/* Tela média (tablet, ou PC com o menu lateral ocupando espaço): 4 indicadores numa linha, embaixo do total */
+@media (min-width: 700px) {
   .resumo__indicadores {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Tela larga: valor total à esquerda e os 4 indicadores à direita */
+@media (min-width: 1280px) {
+  .resumo {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+    align-items: center;
   }
 }

@@ -81,11 +81,10 @@ p {
 }
 
 .cartao__titulo {
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--cor-texto-secundario);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--cor-texto);
   margin-bottom: var(--espaco);
 }
 

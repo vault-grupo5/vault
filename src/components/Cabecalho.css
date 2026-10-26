@@ -1,0 +1,96 @@
+/* Barra do topo (Cabecalho.jsx) e o indicador "ao vivo" */
+
+.topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+}
+
+/* Logo só no celular (no computador ele fica no menu lateral) */
+.topo__marca {
+  flex: 1;
+}
+
+.topo__acoes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* No celular o indicador "ao vivo" desce para uma segunda linha, inteira */
+.topo .ao-vivo {
+  order: 3;
+}
+
+@media (min-width: 960px) {
+  .topo__marca {
+    display: none;
+  }
+
+  .topo .ao-vivo {
+    order: 0;
+    margin-right: auto; /* empurra os botões para a direita */
+  }
+}
+
+/* Celulares estreitos: os botões com texto viram só ícone, para tudo caber numa linha */
+@media (max-width: 560px) {
+  .botao__texto {
+    display: none;
+  }
+
+  .topo__acoes .botao {
+    width: 40px;
+    padding: 0;
+  }
+}
+
+/* ---------- Indicador "ao vivo" ---------- */
+
+.ao-vivo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: var(--raio-pilula);
+  border: 1px solid var(--cor-borda);
+  background: var(--cor-cartao);
+  font-size: 0.85rem;
+  color: var(--cor-texto-secundario);
+}
+
+/* Bolinha verde que "pulsa" para dar a ideia de dado ao vivo */
+.ao-vivo__ponto {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cor-ganho);
+}
+
+.ao-vivo__ponto::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--cor-ganho);
+  animation: pulso 2s ease-out infinite;
+}
+
+/* Enquanto atualiza, a bolinha fica roxa */
+.ao-vivo__ponto--atualizando,
+.ao-vivo__ponto--atualizando::after {
+  background: var(--cor-destaque);
+}
+
+@keyframes pulso {
+  from {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(3);
+    opacity: 0;
+  }
+}

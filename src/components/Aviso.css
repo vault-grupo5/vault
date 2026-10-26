@@ -1,0 +1,88 @@
+/* ---------- Aviso flutuante (Aviso.jsx) ---------- */
+
+/* Região fixa no rodapé da tela; pointer-events: none deixa clicar "através" dela.
+   No celular ela fica acima da barra de navegação (ver o @media no fim do arquivo). */
+.aviso-regiao {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 20px;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  padding: 0 var(--espaco);
+  pointer-events: none;
+}
+
+.aviso {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  padding: 10px 10px 10px 14px;
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: var(--raio-pilula);
+  background: var(--cor-cartao);
+  box-shadow: var(--sombra);
+  pointer-events: auto;
+  animation: aviso-entrar 260ms ease-out;
+}
+
+.aviso__icone {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--cor-ganho);
+  background: var(--cor-ganho-fundo);
+}
+
+.aviso--remocao .aviso__icone {
+  color: var(--cor-perda);
+  background: var(--cor-perda-fundo);
+}
+
+.aviso__texto {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.aviso__fechar {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--cor-texto-secundario);
+  cursor: pointer;
+}
+
+.aviso__fechar:hover {
+  background: var(--cor-cartao-hover);
+  color: var(--cor-texto);
+}
+
+/* Entra subindo de baixo e aparecendo */
+@keyframes aviso-entrar {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Celular: sobe o aviso para não ficar por cima da barra de navegação de baixo */
+@media (max-width: 959px) {
+  .aviso-regiao {
+    bottom: calc(76px + env(safe-area-inset-bottom));
+  }
+}

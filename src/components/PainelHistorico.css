@@ -193,9 +193,8 @@
   top: 0;
   background: var(--cor-cartao);
   color: var(--cor-texto-secundario);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
 .painel__tabela tbody tr + tr td {

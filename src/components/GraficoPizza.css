@@ -68,3 +68,22 @@
   text-align: right;
   color: var(--cor-texto-secundario);
 }
+
+/* Tela larga: pizza à esquerda e legenda ao lado, em vez de a legenda se espalhar pela largura toda */
+@media (min-width: 1100px) {
+  .grafico {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 56px;
+  }
+
+  .grafico__pizza {
+    flex-shrink: 0;
+    margin: 0;
+  }
+
+  .grafico__legenda {
+    flex: 0 1 440px;
+  }
+}

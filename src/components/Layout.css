@@ -1,0 +1,101 @@
+/*
+  Moldura das páginas (Layout.jsx).
+  Celular: uma coluna, com a barra de navegação fixa embaixo.
+  Computador (960px ou mais): menu lateral de 240px à esquerda + conteúdo à direita.
+*/
+
+.estrutura {
+  min-height: 100svh;
+}
+
+.estrutura__coluna {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--espaco) * 1.25);
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--espaco);
+  /* espaço para o conteúdo não ficar escondido atrás da barra de navegação de baixo */
+  padding-bottom: calc(84px + env(safe-area-inset-bottom));
+}
+
+/* O <main> recebe foco pelo "Pular para o conteúdo"; o contorno nele não ajuda ninguém */
+.estrutura__conteudo:focus {
+  outline: none;
+}
+
+@media (min-width: 960px) {
+  .estrutura {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .estrutura__coluna {
+    padding: 24px 32px 32px;
+  }
+}
+
+/* ---------- "Pular para o conteúdo" ----------
+   Fica fora da tela e aparece no canto quando recebe foco pelo Tab */
+
+.pular-conteudo {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 50;
+  padding: 10px 16px;
+  border: 2px solid var(--cor-destaque);
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-cartao);
+  color: var(--cor-texto);
+  font: inherit;
+  font-weight: 600;
+  transform: translateY(-200%);
+}
+
+.pular-conteudo:focus {
+  transform: none;
+}
+
+/* ---------- Cabeçalho de cada página (título e descrição) ---------- */
+
+.pagina {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--espaco) * 1.25);
+}
+
+.pagina__titulo {
+  font-size: clamp(1.6rem, 4vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+/* O título recebe foco ao trocar de página (Layout.jsx); não precisa do contorno */
+.pagina__titulo:focus {
+  outline: none;
+}
+
+.pagina__descricao {
+  max-width: 64ch;
+  margin-top: 6px;
+  color: var(--cor-texto-secundario);
+}
+
+/* ---------- Rodapé ---------- */
+
+.rodape {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--espaco) 0 0;
+  font-size: 0.8rem;
+  color: var(--cor-texto-secundario);
+}
+
+.rodape a {
+  color: var(--cor-destaque-claro);
+}

@@ -1,5 +1,6 @@
 import { Check, Trash2, X } from 'lucide-react'
 import { useEffect } from 'react'
+import './Aviso.css'
 
 const TEMPO_NA_TELA_MS = 3500
 

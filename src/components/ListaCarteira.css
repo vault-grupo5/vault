@@ -5,8 +5,10 @@
   quanto num notebook pequeno, onde a lista divide espaço com o formulário.
 */
 
-.grid__lista {
-  container-type: inline-size; /* permite usar @container lá embaixo */
+/* A própria lista é o "contêiner" medido pelo @container lá embaixo. Assim ela vira cartões
+   pelo espaço que TEM, em qualquer página em que for colocada. */
+.lista {
+  container-type: inline-size;
 }
 
 /* ---------- Barra de ferramentas (ordenar e, depois, exportar) ---------- */
@@ -85,10 +87,8 @@
 }
 
 .tabela thead th {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
   color: var(--cor-texto-secundario);
   border-bottom: 1px solid var(--cor-borda);
 }
@@ -345,10 +345,8 @@
     content: attr(data-rotulo);
     display: block;
     margin-bottom: 2px;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    font-size: 0.78rem;
+    font-weight: 500;
     color: var(--cor-texto-secundario);
   }
 
