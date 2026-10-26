@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { FlaskConical, Plus } from 'lucide-react'
 import ResumoCarteira from '../components/ResumoCarteira.jsx'
-import GraficoPizza from '../components/GraficoPizza.jsx'
+import GraficoRosca from '../components/GraficoRosca.jsx'
 import { useTituloDaPagina } from '../hooks/useTituloDaPagina.js'
 import './Paginas.css'
 
@@ -52,7 +52,7 @@ function VisaoGeral({ carteira }) {
           <h2 className="cartao__titulo" id="titulo-distribuicao">
             Distribuição
           </h2>
-          <GraficoPizza posicoes={carteira.posicoes} />
+          <GraficoRosca posicoes={carteira.posicoes} />
         </section>
       )}
     </div>

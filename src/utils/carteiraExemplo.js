@@ -15,7 +15,7 @@ const ATIVOS_EXEMPLO = [
   { ticker: 'VALE3', quantidade: 60, precoMedio: 70.2 },
   { ticker: 'ITUB4', quantidade: 150, precoMedio: 33.9 },
   { ticker: 'MGLU3', quantidade: 400, precoMedio: 9.8 },
-  { ticker: 'WEGE3', quantidade: 50, precoMedio: 39.6 },
+  { ticker: 'BBAS3', quantidade: 200, precoMedio: 21.3 }, // mesmo setor do ITUB4: mostra o agrupamento "por setor"
   { ticker: 'HGLG11', quantidade: 20, precoMedio: 158 },
 ]
 

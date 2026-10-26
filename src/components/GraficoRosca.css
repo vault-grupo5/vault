@@ -1,0 +1,202 @@
+/* Estilos do gráfico de rosca, do seletor de visão e da legenda (GraficoRosca.jsx) */
+
+.grafico {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--espaco) * 1.25);
+}
+
+/* Limita o tamanho da rosca e centraliza. position: relative → o total do meio se posiciona em relação a ela */
+.rosca__grafico {
+  position: relative;
+  width: 100%;
+  max-width: 240px;
+  margin: 0 auto;
+}
+
+.grafico__vazio {
+  padding: var(--espaco) 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--cor-texto-secundario);
+}
+
+/* ---------- Legenda ---------- */
+
+.grafico__legenda {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legenda__item {
+  display: grid;
+  grid-template-columns: 12px 1fr auto auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--raio-pequeno);
+  font-size: 0.875rem;
+  cursor: default;
+  transition: background var(--transicao);
+}
+
+.legenda__item:hover,
+.legenda__item:focus-visible {
+  background: var(--cor-cartao-hover);
+}
+
+.legenda__cor {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+}
+
+.legenda__textos {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.legenda__ticker {
+  font-weight: 600;
+}
+
+/* Nome da empresa (por ativo) ou tickers do grupo (por setor) */
+.legenda__detalhe {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.78rem;
+  color: var(--cor-texto-secundario);
+}
+
+.legenda__percentual {
+  color: var(--cor-texto);
+}
+
+.legenda__valor {
+  min-width: 96px;
+  text-align: right;
+  color: var(--cor-texto-secundario);
+}
+
+/* Tela larga: rosca à esquerda e legenda ao lado, em vez de a legenda se espalhar pela largura toda */
+@media (min-width: 1100px) {
+  .grafico {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 56px;
+  }
+
+  .rosca__grafico {
+    flex-shrink: 0;
+    margin: 0;
+  }
+
+  .grafico__legenda {
+    flex: 0 1 440px;
+  }
+}
+
+/* ---------- Rosca: total no meio ---------- */
+
+.rosca {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--espaco) * 1.25);
+}
+
+/* Fica por cima do furo da rosca; pointer-events: none deixa o mouse chegar ao gráfico */
+.rosca__centro {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  pointer-events: none;
+  text-align: center;
+}
+
+.rosca__total {
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.rosca__rotulo {
+  font-size: 0.78rem;
+  color: var(--cor-texto-secundario);
+}
+
+.rosca__carregando {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--cor-texto-secundario);
+  font-size: 0.85rem;
+}
+
+.rosca__esqueleto {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+}
+
+.rosca__nota {
+  font-size: 0.8rem;
+  color: var(--cor-texto-secundario);
+}
+
+/* ---------- Seletor "Por ativo / Por setor" (dois rádios com cara de botões juntos) ---------- */
+
+.visao {
+  display: inline-flex;
+  align-self: flex-start;
+  gap: 4px;
+  margin: 0;
+  padding: 4px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pilula);
+  background: var(--cor-fundo);
+}
+
+.visao__opcao {
+  position: relative;
+  padding: 6px 14px;
+  border-radius: var(--raio-pilula);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--cor-texto-secundario);
+  cursor: pointer;
+  transition:
+    background var(--transicao),
+    color var(--transicao);
+}
+
+/* O rádio de verdade fica invisível por cima do rótulo: continua funcionando com teclado (setas) */
+.visao__opcao input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.visao__opcao--ativa {
+  color: var(--cor-sobre-destaque);
+  background: var(--cor-botao);
+}
+
+/* Contorno de foco no rótulo quando o rádio recebe foco pelo teclado */
+.visao__opcao:has(input:focus-visible) {
+  outline: 2px solid var(--cor-destaque-claro);
+  outline-offset: 2px;
+}

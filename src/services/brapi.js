@@ -15,6 +15,8 @@ const CHAVE_HISTORICOS = 'vault:historicos'
 const TEMPO_CACHE_HISTORICO_MS = 60 * 60 * 1000 // 1 hora: são candles diários, mudam pouco
 const CHAVE_BUSCAS = 'vault:buscas'
 const TEMPO_CACHE_BUSCA_MS = 24 * 60 * 60 * 1000 // 24 horas: a lista de ações quase não muda
+const CHAVE_SETORES = 'vault:setores'
+const TEMPO_CACHE_SETOR_MS = 30 * 24 * 60 * 60 * 1000 // 30 dias
 const PAUSA_ENTRE_TICKERS_MS = 300 // respiro entre uma requisição e outra
 const ESPERA_ANTES_DE_REPETIR_MS = 2000 // espera antes de repetir quando a API diz "limite atingido" (429)
 
@@ -197,6 +199,32 @@ export async function buscarSugestoes(termo, { signal } = {}) {
 
   salvarGenerico(CHAVE_BUSCAS, busca, sugestoes, 40)
   return sugestoes
+}
+
+// Busca o setor de um ativo (para a distribuição "por setor").
+// Usa a mesma lista de ações das sugestões (/quote/list), que traz o setor no plano grátis.
+// Devolve { setor, tipo }:
+//   setor: em inglês, como a brapi manda (ex: "Finance", "Energy Minerals") ou null
+//   tipo:  "stock" (ação), "fund" (FII/ETF) ou "bdr"; null se o ticker não foi encontrado
+// Cache de 30 dias: o setor de uma empresa quase nunca muda.
+export async function buscarSetor(ticker) {
+  const codigo = ticker.trim().toUpperCase()
+
+  const emCache = lerDoCache(CHAVE_SETORES, codigo, TEMPO_CACHE_SETOR_MS)
+  if (emCache) return emCache
+
+  const url = new URL(`${URL_BASE}/list`)
+  url.searchParams.set('search', codigo)
+  url.searchParams.set('limit', '10')
+  if (TOKEN) url.searchParams.set('token', TOKEN)
+
+  const dados = await pedirJson(url, codigo)
+  // A busca também traz parecidos (ex: PETR4F); pegamos só o ticker exato
+  const acao = (dados.stocks ?? []).find((a) => a.stock === codigo)
+  const resultado = { setor: acao?.sector ?? null, tipo: acao?.type ?? null }
+
+  salvarGenerico(CHAVE_SETORES, codigo, resultado, 200)
+  return resultado
 }
 
 // Busca vários tickers (uma requisição por ticker, por causa do plano grátis).

@@ -45,7 +45,7 @@
   --cor-grafico-4: #3987e5; /* azul */
   --cor-grafico-5: #c98500; /* amarelo */
   --cor-grafico-6: #d55181; /* magenta */
-  --cor-grafico-outros: #5d5d78; /* cinza */
+  --cor-grafico-outros: #6b6b88; /* cinza (contraste ≥ 3:1 sobre o cartão) */
 
   /* ---------- Tipografia ---------- */
   --fonte: 'Manrope Variable', system-ui, 'Segoe UI', Roboto, sans-serif; /* instalada via npm em main.jsx */
