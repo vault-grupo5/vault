@@ -48,7 +48,7 @@
   --cor-grafico-outros: #5d5d78; /* cinza */
 
   /* ---------- Tipografia ---------- */
-  --fonte: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --fonte: 'Manrope Variable', system-ui, 'Segoe UI', Roboto, sans-serif; /* instalada via npm em main.jsx */
   --fonte-mono: ui-monospace, 'Cascadia Code', Consolas, monospace;
 
   /* ---------- Medidas ---------- */

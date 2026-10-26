@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { Plus } from 'lucide-react'
 import { criarAtivo } from '../utils/ativo.js'
 import { lerNumero } from '../utils/formatacao.js'
 import { buscarCotacao } from '../services/brapi.js'
@@ -191,7 +192,13 @@ function FormularioAtivo({ tickersExistentes, aoAdicionar }) {
       </div>
 
       <button type="submit" className="botao botao--primario formulario__botao" disabled={enviando}>
-        {enviando ? 'Verificando ticker…' : '+ Adicionar à carteira'}
+        {enviando ? (
+          'Verificando ticker…'
+        ) : (
+          <>
+            <Plus size={18} aria-hidden="true" /> Adicionar à carteira
+          </>
+        )}
       </button>
     </form>
   )

@@ -44,6 +44,9 @@
 }
 
 .resumo__aviso {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 0.8rem;
   color: var(--cor-aviso);
 }

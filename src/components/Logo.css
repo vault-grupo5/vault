@@ -1,0 +1,45 @@
+/* Estilos do logo (Logo.jsx). As cores vêm das variáveis, então o logo acompanha o tema. */
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo__desenho {
+  flex-shrink: 0;
+  display: block;
+}
+
+.logo__porta {
+  fill: var(--cor-botao);
+}
+
+.logo__moldura {
+  fill: none;
+  stroke: var(--cor-sobre-destaque);
+  stroke-opacity: 0.3;
+  stroke-width: 1.4;
+}
+
+.logo__detalhe {
+  fill: var(--cor-destaque-claro);
+}
+
+.logo__traco {
+  fill: none;
+  stroke: var(--cor-sobre-destaque);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.logo__miolo {
+  fill: var(--cor-sobre-destaque);
+}
+
+.logo__nome {
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--cor-texto);
+}

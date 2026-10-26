@@ -187,6 +187,9 @@
 }
 
 .ativo__sem-cotacao {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   color: var(--cor-texto-secundario);
   cursor: help;
 }

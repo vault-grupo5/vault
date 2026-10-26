@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Pencil, Trash2, TriangleAlert } from 'lucide-react'
 import Dinheiro from './Dinheiro.jsx'
 import Pilula from './Pilula.jsx'
 import LogoAtivo from './LogoAtivo.jsx'
@@ -104,7 +105,7 @@ function LinhaAtivo({ posicao, carregando, erro, aoEditar, aoRemover, aoAbrirHis
   } else {
     precoAtual = (
       <span className="ativo__sem-cotacao" title={erro}>
-        <span aria-hidden="true">⚠</span> Sem cotação
+        <TriangleAlert size={14} aria-hidden="true" /> Sem cotação
         {erro && <span className="sr-only">: {erro}</span>}
       </span>
     )
@@ -215,7 +216,7 @@ function LinhaAtivo({ posicao, carregando, erro, aoEditar, aoRemover, aoAbrirHis
               aria-label={`Editar ${ticker}`}
               title="Editar"
             >
-              ✎
+              <Pencil size={16} aria-hidden="true" />
             </button>
             <button
               type="button"
@@ -224,7 +225,7 @@ function LinhaAtivo({ posicao, carregando, erro, aoEditar, aoRemover, aoAbrirHis
               aria-label={`Remover ${ticker}`}
               title="Remover"
             >
-              ✕
+              <Trash2 size={16} aria-hidden="true" />
             </button>
           </div>
         )}

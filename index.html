@@ -5,8 +5,15 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0B0B12" />
-    <meta name="description" content="VAULT — carteira de investimentos com cotações da B3" />
-    <title>VAULT · Minha carteira</title>
+    <title>VAULT — Carteira de investimentos</title>
+    <meta
+      name="description"
+      content="Acompanhe sua carteira de ações, FIIs e ETFs da B3 com cotações da brapi: patrimônio, lucro, distribuição e histórico. Os dados ficam só no seu navegador."
+    />
+    <!-- Como o link aparece quando é compartilhado (WhatsApp, redes sociais) -->
+    <meta property="og:title" content="VAULT — Carteira de investimentos" />
+    <meta property="og:description" content="Patrimônio, lucro e distribuição da sua carteira da B3, com cotações da brapi." />
+    <meta property="og:type" content="website" />
     <!--
       Define o tema (claro/escuro) ANTES da página aparecer. Se fosse feito só pelo React,
       a pessoa veria um "flash" do tema escuro antes de trocar para o claro.
@@ -21,13 +28,6 @@
         document.documentElement.dataset.tema = 'escuro'
       }
     </script>
-    <!-- Fonte Inter (Google Fonts). Se não carregar, o CSS usa a fonte do sistema. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
   </head>
   <body>
     <div id="root"></div>

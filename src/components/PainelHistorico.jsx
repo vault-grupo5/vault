@@ -9,6 +9,7 @@ import {
   Tooltip,
 } from 'chart.js'
 import { Line } from 'react-chartjs-2'
+import { X } from 'lucide-react'
 import LogoAtivo from './LogoAtivo.jsx'
 import Pilula from './Pilula.jsx'
 import { buscarHistorico } from '../services/brapi.js'
@@ -115,7 +116,7 @@ function PainelHistorico({ posicao, aoFechar }) {
             <p className="painel__subtitulo">{cotacao?.nome ?? 'Evolução do preço'} · últimos 3 meses</p>
           </div>
           <button type="button" className="botao botao--fantasma botao--icone" onClick={fechar} aria-label="Fechar painel">
-            ✕
+            <X size={18} aria-hidden="true" />
           </button>
         </header>
 

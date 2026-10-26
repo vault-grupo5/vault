@@ -30,15 +30,6 @@
   gap: 12px;
 }
 
-.cabecalho__logo {
-  width: 40px;
-  height: 40px;
-  padding: 7px;
-  border-radius: 12px;
-  color: var(--cor-destaque-claro);
-  background: var(--cor-destaque-fundo);
-}
-
 .cabecalho__nome {
   font-size: 0.75rem;
   font-weight: 700;
@@ -169,15 +160,8 @@
 }
 
 .banner-erro__icone {
-  display: grid;
-  place-items: center;
   flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--cor-perda);
-  color: var(--cor-fundo);
-  font-weight: 800;
+  color: var(--cor-perda);
 }
 
 .banner-erro__texto {

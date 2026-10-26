@@ -1,3 +1,4 @@
+import { Download, Wallet } from 'lucide-react'
 import LinhaAtivo from './LinhaAtivo.jsx'
 import { OPCOES_ORDENACAO } from '../utils/ordenacao.js'
 import './ListaCarteira.css'
@@ -29,7 +30,7 @@ function ListaCarteira({
     return (
       <div className="vazio">
         <div className="vazio__icone" aria-hidden="true">
-          ◔
+          <Wallet size={30} />
         </div>
         <p className="vazio__titulo">Sua carteira está vazia</p>
         <p className="vazio__texto">Cadastre seu primeiro ativo para acompanhar o valor e o lucro em tempo real.</p>
@@ -63,7 +64,7 @@ function ListaCarteira({
         )}
 
         <button type="button" className="botao botao--fantasma lista__exportar" onClick={aoExportar}>
-          <span aria-hidden="true">⤓</span> Exportar CSV
+          <Download size={16} aria-hidden="true" /> Exportar CSV
         </button>
       </div>
 

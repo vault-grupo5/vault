@@ -1,3 +1,4 @@
+import { TriangleAlert } from 'lucide-react'
 import Dinheiro from './Dinheiro.jsx'
 import Pilula from './Pilula.jsx'
 import { formatarMoeda, formatarMoedaComSinal, formatarPorcentagem } from '../utils/formatacao.js'
@@ -46,7 +47,7 @@ function ResumoCarteira({ resumo, carregando }) {
         {/* Aviso quando o total é aproximado porque falta cotação de algum ativo */}
         {resumo.semCotacao > 0 && !carregando && !vazia && (
           <p className="resumo__aviso">
-            <span aria-hidden="true">⚠</span> {resumo.semCotacao} ativo(s) sem cotação: usando o preço médio no
+            <TriangleAlert size={14} aria-hidden="true" /> {resumo.semCotacao} ativo(s) sem cotação: usando o preço médio no
             total.
           </p>
         )}
