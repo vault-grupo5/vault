@@ -1,12 +1,28 @@
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import GraficoEvolucao from '../components/GraficoEvolucao.jsx'
+import { useHistoricos } from '../hooks/useHistoricos.js'
 import { useTituloDaPagina } from '../hooks/useTituloDaPagina.js'
+import { calcularEvolucao } from '../utils/evolucao.js'
+import '../components/Analises.css'
 import './Paginas.css'
 
-// Página "Análises": gráficos sobre o desempenho da carteira ao longo do tempo.
+// Página "Análises": como a carteira se comportou nos últimos 3 meses.
+// Os históricos são buscados só quando a pessoa abre esta página (e ficam 1 hora no cache).
 // - carteira: objeto do hook useCarteira
 function Analises({ carteira }) {
   useTituloDaPagina('Análises')
-  const vazia = carteira.ativos.length === 0
+  const { ativos } = carteira
+  const vazia = ativos.length === 0
+
+  const tickers = useMemo(() => ativos.map((a) => a.ticker), [ativos])
+  const historicos = useHistoricos(tickers)
+
+  // Só calculamos quando todos os históricos chegaram (evita o gráfico "crescer" durante a carga)
+  const evolucao = useMemo(
+    () => (historicos.carregando ? null : calcularEvolucao(ativos, historicos.historicos)),
+    [ativos, historicos.carregando, historicos.historicos],
+  )
 
   return (
     <div className="pagina">
@@ -33,13 +49,20 @@ function Analises({ carteira }) {
           </div>
         </section>
       ) : (
-        <section className="cartao comecar" aria-labelledby="titulo-em-breve">
-          <h2 className="cartao__titulo" id="titulo-em-breve">
-            Em breve
+        <section className="cartao" aria-labelledby="titulo-evolucao" aria-busy={historicos.carregando}>
+          <h2 className="cartao__titulo" id="titulo-evolucao">
+            Evolução do patrimônio
           </h2>
-          <p className="comecar__texto">
-            Evolução do patrimônio, comparação com o Ibovespa e rentabilidade por ativo vão aparecer aqui.
-          </p>
+          {evolucao ? (
+            <GraficoEvolucao pontos={evolucao.pontos} semHistorico={evolucao.semHistorico} />
+          ) : (
+            <div className="analise__carregando" role="status">
+              <span className="esqueleto analise__esqueleto" />
+              <p className="analise__progresso">
+                Carregando o histórico: {historicos.feitos} de {historicos.total} ativo(s)…
+              </p>
+            </div>
+          )}
         </section>
       )}
     </div>

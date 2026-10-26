@@ -1,0 +1,114 @@
+/* Estilos em comum dos cartões da página Análises (GraficoEvolucao, comparação, rentabilidade) */
+
+.analise {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--espaco) * 1.25);
+}
+
+.analise__numeros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.analise__grafico {
+  position: relative;
+  height: 280px; /* o Chart.js precisa de uma altura definida */
+}
+
+@media (min-width: 960px) {
+  .analise__grafico {
+    height: 320px;
+  }
+}
+
+/* Nota explicativa (ex: "o cálculo considera a quantidade atual") */
+.analise__nota {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 80ch;
+  font-size: 0.85rem;
+  color: var(--cor-texto-secundario);
+}
+
+.analise__nota svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--cor-destaque-claro);
+}
+
+.analise__vazio {
+  padding: var(--espaco) 0;
+  color: var(--cor-texto-secundario);
+}
+
+/* Estado de carregamento com barra de progresso ("3 de 6 ativos") */
+.analise__carregando {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.analise__esqueleto {
+  display: block;
+  width: 100%;
+  height: 280px;
+  border-radius: 12px;
+}
+
+.analise__progresso {
+  font-size: 0.85rem;
+  color: var(--cor-texto-secundario);
+}
+
+/* ---------- Tabela alternativa (dados do gráfico em texto) ---------- */
+
+.analise__tabela summary {
+  width: fit-content;
+  padding: 6px 2px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--cor-destaque-claro);
+  cursor: pointer;
+}
+
+.analise__tabela-rolagem {
+  max-height: 260px;
+  margin-top: 8px;
+  overflow: auto;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pequeno);
+}
+
+.analise__tabela table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.analise__tabela th,
+.analise__tabela td {
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.analise__tabela th:not(:first-child),
+.analise__tabela td:not(:first-child) {
+  text-align: right;
+}
+
+.analise__tabela thead th {
+  position: sticky;
+  top: 0;
+  background: var(--cor-cartao);
+  color: var(--cor-texto-secundario);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.analise__tabela tbody tr + tr td {
+  border-top: 1px solid var(--cor-borda);
+}
