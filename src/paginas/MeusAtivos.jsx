@@ -1,9 +1,11 @@
-import { useCallback, useState } from 'react'
+import { lazy, Suspense, useCallback, useState } from 'react'
 import FormularioAtivo from '../components/FormularioAtivo.jsx'
 import ListaCarteira from '../components/ListaCarteira.jsx'
-import PainelHistorico from '../components/PainelHistorico.jsx'
 import { useTituloDaPagina } from '../hooks/useTituloDaPagina.js'
 import './Paginas.css'
+
+// O painel de histórico usa o Chart.js: só é baixado quando a pessoa clica num ativo
+const PainelHistorico = lazy(() => import('../components/PainelHistorico.jsx'))
 
 // Página "Meus ativos": cadastro e lista (editar, remover, ordenar, ver o histórico de cada um).
 // - carteira: objeto do hook useCarteira
@@ -54,7 +56,12 @@ function MeusAtivos({ carteira }) {
         </section>
       </div>
 
-      {posicaoAberta && <PainelHistorico key={posicaoAberta.ticker} posicao={posicaoAberta} aoFechar={fecharHistorico} />}
+      {posicaoAberta && (
+        // fallback null: o painel abre assim que o código chega (é rápido; ele mesmo mostra o carregamento)
+        <Suspense fallback={null}>
+          <PainelHistorico key={posicaoAberta.ticker} posicao={posicaoAberta} aoFechar={fecharHistorico} />
+        </Suspense>
+      )}
     </div>
   )
 }

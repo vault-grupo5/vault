@@ -1,10 +1,11 @@
-import { useEffect, useRef } from 'react'
+import { Suspense, useEffect, useRef } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import Navegacao from './Navegacao.jsx'
 import Cabecalho from './Cabecalho.jsx'
 import BannerErro from './BannerErro.jsx'
 import AvisoExemplo from './AvisoExemplo.jsx'
 import Aviso from './Aviso.jsx'
+import Carregando from './Carregando.jsx'
 import { INTERVALO_ATUALIZACAO_MS } from '../hooks/useCarteira.js'
 import { formatarHorario } from '../utils/formatacao.js'
 import './Layout.css'
@@ -29,8 +30,21 @@ function Layout({ carteira, tema, aoAlternarTema, ocultarValores, aoAlternarPriv
       primeiraVez.current = false
       return
     }
-    document.querySelector('#conteudo h1')?.focus()
-    window.scrollTo(0, 0)
+    // A página nova pode ainda estar sendo baixada (carregamento sob demanda), então esperamos
+    // o título aparecer: tentamos a cada quadro da tela, por até ~2 segundos.
+    let tentativas = 0
+    let quadro
+    function focarTitulo() {
+      const titulo = document.querySelector('#conteudo h1')
+      if (titulo) {
+        titulo.focus()
+        window.scrollTo(0, 0)
+      } else if (tentativas++ < 120) {
+        quadro = requestAnimationFrame(focarTitulo)
+      }
+    }
+    focarTitulo()
+    return () => cancelAnimationFrame(quadro)
   }, [local.pathname])
 
   // "Pular para o conteúdo": quem navega pelo teclado não precisa passar pelo menu todo.
@@ -73,7 +87,10 @@ function Layout({ carteira, tema, aoAlternarTema, ocultarValores, aoAlternarPriv
 
         {/* tabIndex -1: permite receber foco pelo "Pular para o conteúdo", sem entrar na ordem do Tab */}
         <main id="conteudo" className="estrutura__conteudo" tabIndex={-1}>
-          <Outlet />
+          {/* Suspense mostra o "Carregando" enquanto o código da página é baixado */}
+          <Suspense fallback={<Carregando altura={320} texto="Carregando a página…" />}>
+            <Outlet />
+          </Suspense>
         </main>
 
         <footer className="rodape">

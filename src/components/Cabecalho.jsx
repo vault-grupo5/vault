@@ -73,7 +73,9 @@ function Cabecalho({
             type="button"
             className="botao botao--fantasma"
             onClick={aoExportar}
-            aria-label="Exportar carteira em CSV"
+            // O nome acessível começa com o texto visível ("Exportar CSV"): quem usa comando de voz
+            // fala o que vê na tela (regra WCAG 2.5.3, "rótulo no nome")
+            aria-label="Exportar CSV da carteira"
             title="Baixar a carteira em CSV (abre no Excel)"
           >
             <Download size={16} aria-hidden="true" />

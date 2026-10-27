@@ -25,7 +25,7 @@
   /* ---------- Texto ---------- */
   --cor-texto: #f4f4f8; /* texto principal */
   --cor-texto-secundario: #8b8ba3; /* rótulos e textos de apoio */
-  --cor-centavos: #5d5d78; /* centavos "apagados" no valor total */
+  --cor-centavos: #666684; /* centavos "apagados" no valor total (texto grande: contraste ≥ 3:1) */
 
   /* ---------- Ganho e perda ---------- */
   --cor-ganho: #4ade80;
@@ -95,7 +95,7 @@
 
   --cor-texto: #15131f;
   --cor-texto-secundario: #5c5972;
-  --cor-centavos: #9a97b0;
+  --cor-centavos: #908da6; /* contraste ≥ 3:1 sobre branco (texto grande) */
 
   --cor-ganho: #166534;
   --cor-ganho-fundo: rgba(22, 163, 74, 0.12);

@@ -1,9 +1,13 @@
+import { lazy, Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import { FlaskConical, Plus } from 'lucide-react'
 import ResumoCarteira from '../components/ResumoCarteira.jsx'
-import GraficoRosca from '../components/GraficoRosca.jsx'
+import Carregando from '../components/Carregando.jsx'
 import { useTituloDaPagina } from '../hooks/useTituloDaPagina.js'
 import './Paginas.css'
+
+// O gráfico (e o Chart.js) só é baixado quando há ativos para mostrar
+const GraficoRosca = lazy(() => import('../components/GraficoRosca.jsx'))
 
 // Página inicial: o resumo da carteira (patrimônio, lucro, dia) e a distribuição.
 // - carteira: objeto do hook useCarteira
@@ -52,7 +56,9 @@ function VisaoGeral({ carteira }) {
           <h2 className="cartao__titulo" id="titulo-distribuicao">
             Distribuição
           </h2>
-          <GraficoRosca posicoes={carteira.posicoes} />
+          <Suspense fallback={<Carregando altura={240} texto="Carregando o gráfico…" />}>
+            <GraficoRosca posicoes={carteira.posicoes} />
+          </Suspense>
         </section>
       )}
     </div>

@@ -260,7 +260,14 @@ p {
 
 /* ---------- Dinheiro com centavos apagados ---------- */
 
+/* Em texto pequeno (lista) os centavos usam a cor secundária: continuam mais fracos que o
+   número, mas com contraste suficiente para texto pequeno (≥ 4,5:1). */
 .dinheiro__centavos {
+  color: var(--cor-texto-secundario);
+}
+
+/* No valor total (texto grande) podem ficar mais "apagados": texto grande exige 3:1 */
+.resumo__total .dinheiro__centavos {
   color: var(--cor-centavos);
 }
 
@@ -307,4 +314,12 @@ p {
   color: var(--cor-destaque-claro);
   border-color: var(--cor-destaque);
   background: var(--cor-destaque-fundo);
+}
+
+/* ---------- Carregando (Carregando.jsx): bloco cinza enquanto uma parte do site é baixada ---------- */
+
+.carregando__bloco {
+  display: block;
+  width: 100%;
+  border-radius: var(--raio);
 }

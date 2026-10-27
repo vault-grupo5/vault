@@ -129,7 +129,6 @@ function LinhaAtivo({ posicao, carregando, erro, aoEditar, aoRemover, aoAbrirHis
           type="button"
           className="ativo ativo--botao"
           onClick={() => aoAbrirHistorico(ticker)}
-          aria-label={`Ver evolução de ${ticker} nos últimos 3 meses`}
         >
           <LogoAtivo ticker={ticker} logo={cotacao?.logo} />
           <span className="ativo__textos">
@@ -139,6 +138,9 @@ function LinhaAtivo({ posicao, carregando, erro, aoEditar, aoRemover, aoAbrirHis
               {ehExemplo(posicao) && <span className="etiqueta">Exemplo</span>}
             </span>
             <span className="ativo__nome">{cotacao?.nome ?? '—'}</span>
+            {/* O nome do botão é o texto visível (ticker e empresa) + este complemento só para leitor
+                de tela. Assim quem usa comando de voz pode dizer "PETR4" (regra WCAG 2.5.3) */}
+            <span className="sr-only">, ver evolução nos últimos 3 meses</span>
           </span>
         </button>
       </th>

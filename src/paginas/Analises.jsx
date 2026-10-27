@@ -1,13 +1,16 @@
-import { useMemo } from 'react'
+import { lazy, Suspense, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import GraficoEvolucao from '../components/GraficoEvolucao.jsx'
-import GraficoComparacao from '../components/GraficoComparacao.jsx'
-import GraficoRentabilidade from '../components/GraficoRentabilidade.jsx'
+import Carregando from '../components/Carregando.jsx'
 import { useHistoricos } from '../hooks/useHistoricos.js'
 import { useTituloDaPagina } from '../hooks/useTituloDaPagina.js'
 import { calcularEvolucao, compararComIndice } from '../utils/evolucao.js'
 import '../components/Analises.css'
 import './Paginas.css'
+
+// Os gráficos (e o Chart.js) só são baixados quando há ativos para analisar
+const GraficoEvolucao = lazy(() => import('../components/GraficoEvolucao.jsx'))
+const GraficoComparacao = lazy(() => import('../components/GraficoComparacao.jsx'))
+const GraficoRentabilidade = lazy(() => import('../components/GraficoRentabilidade.jsx'))
 
 // Símbolo do Ibovespa na brapi (conferido: o histórico de 3 meses vem no plano grátis)
 const IBOVESPA = '^BVSP'
@@ -65,7 +68,9 @@ function Analises({ carteira }) {
             Evolução do patrimônio
           </h2>
           {evolucao ? (
-            <GraficoEvolucao pontos={evolucao.pontos} semHistorico={evolucao.semHistorico} />
+            <Suspense fallback={<Carregando texto="Carregando o gráfico…" />}>
+              <GraficoEvolucao pontos={evolucao.pontos} semHistorico={evolucao.semHistorico} />
+            </Suspense>
           ) : (
             <div className="analise__carregando" role="status">
               <span className="esqueleto analise__esqueleto" />
@@ -85,7 +90,9 @@ function Analises({ carteira }) {
             Carteira × Ibovespa
           </h2>
           {comparacao ? (
-            <GraficoComparacao comparacao={comparacao} />
+            <Suspense fallback={<Carregando texto="Carregando o gráfico…" />}>
+              <GraficoComparacao comparacao={comparacao} />
+            </Suspense>
           ) : (
             <p className="analise__vazio">
               Não foi possível comparar com o Ibovespa
@@ -101,7 +108,9 @@ function Analises({ carteira }) {
           <h2 className="cartao__titulo" id="titulo-rentabilidade">
             Rentabilidade por ativo
           </h2>
-          <GraficoRentabilidade posicoes={carteira.posicoes} />
+          <Suspense fallback={<Carregando altura={200} texto="Carregando o gráfico…" />}>
+            <GraficoRentabilidade posicoes={carteira.posicoes} />
+          </Suspense>
         </section>
       )}
     </div>

@@ -1,12 +1,17 @@
+import { lazy } from 'react'
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout.jsx'
 import VisaoGeral from './paginas/VisaoGeral.jsx'
-import MeusAtivos from './paginas/MeusAtivos.jsx'
-import Analises from './paginas/Analises.jsx'
 import { useCarteira } from './hooks/useCarteira.js'
 import { useTema } from './hooks/useTema.js'
 import { usePrivacidade } from './hooks/usePrivacidade.js'
 import { PrivacidadeContexto } from './hooks/useMoeda.js'
+
+// Páginas carregadas SOB DEMANDA (lazy): o código delas (e o do Chart.js, que elas usam)
+// só é baixado quando a pessoa abre a página. Assim a primeira visita ao site fica mais leve.
+// A Visão geral é a página inicial, então vem junto com o resto.
+const MeusAtivos = lazy(() => import('./paginas/MeusAtivos.jsx'))
+const Analises = lazy(() => import('./paginas/Analises.jsx'))
 
 // Componente principal: cria o estado da carteira (uma vez só) e define as páginas.
 //

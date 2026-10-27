@@ -20,6 +20,12 @@
   padding-bottom: calc(84px + env(safe-area-inset-bottom));
 }
 
+/* O conteúdo ocupa pelo menos a altura da tela: assim o rodapé começa fora da área visível e
+   não "pula" para baixo quando a página termina de carregar (métrica CLS do Lighthouse) */
+.estrutura__conteudo {
+  min-height: 100svh;
+}
+
 /* O <main> recebe foco pelo "Pular para o conteúdo"; o contorno nele não ajuda ninguém */
 .estrutura__conteudo:focus {
   outline: none;
