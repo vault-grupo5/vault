@@ -33,6 +33,13 @@ export function separarCentavos(valor) {
 
 // 2.345 → "+2,35%" e -1.2 → "−1,20%"
 // O sinal de mais deixa claro que é ganho; o de menos é o "−" tipográfico (mais legível)
+// Número grande em forma curta: 588547212774 -> "588,5 bi", 42530700 -> "42,5 mi".
+// Devolve "—" quando o dado não existe (a API nem sempre manda).
+export function formatarCompacto(valor) {
+  if (typeof valor !== 'number' || !Number.isFinite(valor)) return '—'
+  return new Intl.NumberFormat('pt-BR', { notation: 'compact', maximumFractionDigits: 1 }).format(valor)
+}
+
 export function formatarPorcentagem(valor) {
   const numero = valor ?? 0
   const sinal = numero > 0 ? '+' : numero < 0 ? '−' : ''

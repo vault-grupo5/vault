@@ -78,7 +78,7 @@ A coluna **"Ligado a"** só mostra com qual parte já dividida o arquivo convers
 |---|---|---|
 | `calculos.test.js` | 10 | Vitor |
 | `ordenacao.test.js` | 6 | Lucas |
-| `formatacao.test.js` | 12 | — |
+| `formatacao.test.js` | 14 | — |
 | `evolucao.test.js` | 12 | — |
 | `alocacao.test.js` | 8 | Miguel |
 | `exportarCsv.test.js` | 6 | — |

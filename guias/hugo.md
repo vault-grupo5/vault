@@ -97,5 +97,9 @@ function pedirJson(url, codigo, signal) {
 5. **Por que `buscarCotacao` devolve um objeto novo em vez da resposta da brapi?**
    A resposta da API é grande e em inglês (`regularMarketPrice`, `logourl`...). Transformando num objeto pequeno em português (`preco`, `logo`...), o resto do site não depende do formato da brapi: se a API mudar, só este arquivo precisa ser ajustado.
 
+## Novidade: dados extras da cotação (52 semanas, volume, valor de mercado)
+`buscarCotacao` agora também guarda `maxima52`, `minima52`, `volume` e `valorMercado`, que a brapi já manda na mesma resposta (`fiftyTwoWeekHigh`, `fiftyTwoWeekLow`, `regularMarketVolume`, `marketCap`). Por isso não existe requisição nova: o painel do ativo só lê a cotação que a lista já tem. Se a API não mandar um campo, o painel mostra "—". O painel está em `PainelHistorico.jsx` e o formatador de números grandes ("588,5 bi") é `formatarCompacto`.
+- **Pergunta possível:** "Por que não buscar esses dados numa requisição separada?" → o plano grátis tem limite de requisições e só 1 simultânea; como o dado já vem na cotação, reaproveitar é de graça.
+
 ## Testes relacionados
 O `brapi.js` não tem teste automatizado próprio (ele depende da internet). Foi testado no navegador: cache (reabrir não gera requisição), erro com a API bloqueada e fila sem 429.

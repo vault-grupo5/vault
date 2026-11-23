@@ -74,6 +74,11 @@
   margin: 0;
 }
 
+/* Segunda linha de números (mercado) logo abaixo da primeira */
+.painel__numeros + .painel__numeros {
+  margin-top: 10px;
+}
+
 /* ---------- Gráfico ---------- */
 
 .painel__figura {

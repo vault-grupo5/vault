@@ -16,12 +16,15 @@ import Pilula from './Pilula.jsx'
 import { buscarHistorico } from '../services/brapi.js'
 import { prefereMenosMovimento } from '../hooks/useNumeroAnimado.js'
 import { lerCor } from '../utils/cores.js'
-import { formatarPorcentagem } from '../utils/formatacao.js'
+import { formatarCompacto, formatarPorcentagem } from '../utils/formatacao.js'
 import './PainelHistorico.css'
 
 // Registramos só as partes do Chart.js que o gráfico de linha usa:
 // escalas (eixos), linha, pontos, preenchimento sob a linha e tooltip.
 ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, Filler, Tooltip)
+
+// A API pode não mandar um campo (ou mandar null): nesse caso mostramos "—"
+const semDado = (valor) => typeof valor !== 'number' || !Number.isFinite(valor)
 
 const formatarDiaMes = (ms) => new Date(ms).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
 const formatarDataCompleta = (ms) =>
@@ -161,6 +164,28 @@ function PainelHistorico({ posicao, aoFechar }) {
               <div className="indicador">
                 <dt className="indicador__rotulo">Máxima</dt>
                 <dd className="indicador__valor">{moeda(resumo.maximo)}</dd>
+              </div>
+            </dl>
+
+            {/* Dados do mercado que vêm na mesma cotação (sem requisição nova). "—" quando a API não manda. */}
+            <dl className="painel__numeros">
+              <div className="indicador">
+                <dt className="indicador__rotulo">Máxima 52 semanas</dt>
+                <dd className="indicador__valor">{semDado(cotacao?.maxima52) ? '—' : moeda(cotacao.maxima52)}</dd>
+              </div>
+              <div className="indicador">
+                <dt className="indicador__rotulo">Mínima 52 semanas</dt>
+                <dd className="indicador__valor">{semDado(cotacao?.minima52) ? '—' : moeda(cotacao.minima52)}</dd>
+              </div>
+              <div className="indicador">
+                <dt className="indicador__rotulo">Volume</dt>
+                <dd className="indicador__valor">{formatarCompacto(cotacao?.volume)}</dd>
+              </div>
+              <div className="indicador">
+                <dt className="indicador__rotulo">Valor de mercado</dt>
+                <dd className="indicador__valor">
+                  {semDado(cotacao?.valorMercado) ? '—' : `R$ ${formatarCompacto(cotacao.valorMercado)}`}
+                </dd>
               </div>
             </dl>
 

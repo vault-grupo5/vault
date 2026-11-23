@@ -1,6 +1,7 @@
 // Testes da formatação para o padrão brasileiro (utils/formatacao.js). Rodar com: npm test
 import { describe, expect, it } from 'vitest'
 import {
+  formatarCompacto,
   formatarHorario,
   formatarMoeda,
   formatarMoedaComSinal,
@@ -89,5 +90,18 @@ describe('lerNumero', () => {
     expect(lerNumero(' 100 ')).toBe(100)
     expect(lerNumero('abc')).toBeNaN()
     expect(lerNumero('')).toBeNaN()
+  })
+})
+
+describe('formatarCompacto', () => {
+  it('abrevia números grandes em português', () => {
+    expect(comEspacoNormal(formatarCompacto(588547212774))).toMatch(/^588,5 bi/)
+    expect(comEspacoNormal(formatarCompacto(42530700))).toMatch(/^42,5 mi/)
+  })
+
+  it('devolve "—" quando o dado não existe', () => {
+    expect(formatarCompacto(undefined)).toBe('—')
+    expect(formatarCompacto(null)).toBe('—')
+    expect(formatarCompacto(NaN)).toBe('—')
   })
 })

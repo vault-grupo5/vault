@@ -126,6 +126,12 @@ export async function buscarCotacao(ticker, { ignorarCache = false } = {}) {
     variacaoDia: resultado.regularMarketChangePercent,
     atualizadoEm: resultado.regularMarketTime,
     logo: resultado.logourl,
+    // Dados extras que já vêm nesta mesma resposta (sem requisição nova), usados no painel do ativo.
+    // Podem faltar (ex: fundos sem valor de mercado); o painel mostra "—" nesse caso.
+    maxima52: resultado.fiftyTwoWeekHigh,
+    minima52: resultado.fiftyTwoWeekLow,
+    volume: resultado.regularMarketVolume,
+    valorMercado: resultado.marketCap,
   }
 
   salvarNoCache(codigo, cotacao)

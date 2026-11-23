@@ -35,7 +35,7 @@
 ## Recursos principais
 
 - **Visão geral:** patrimônio total (com animação e centavos em destaque mais fraco), total investido, lucro/prejuízo em R$ e %, variação do dia e um gráfico de rosca com a distribuição da carteira por ativo ou por setor, com o total no centro.
-- **Meus ativos:** cadastro com sugestões de ações enquanto se digita, lista com preço atual, valor e lucro de cada ativo, edição, remoção, ordenação e um painel com o gráfico dos últimos 3 meses de cada ativo.
+- **Meus ativos:** cadastro com sugestões de ações enquanto se digita, lista com preço atual, valor e lucro de cada ativo, edição, remoção, ordenação e um painel com o gráfico dos últimos 3 meses de cada ativo, junto com máxima e mínima de 52 semanas, volume e valor de mercado.
 - **Análises:** evolução do patrimônio nos últimos 3 meses, rentabilidade da carteira comparada ao Ibovespa e rentabilidade de cada ativo em barras.
 - **Carteira de exemplo** para conhecer o site sem cadastrar nada.
 - **Modo privacidade**, que esconde os valores em R$.
@@ -63,6 +63,7 @@
 16. Mostrar a evolução do patrimônio nos últimos 3 meses (histórico de cada ativo × a quantidade atual, com esse aviso na tela).
 17. Comparar a rentabilidade da carteira com a do Ibovespa no mesmo período, em %, com a diferença em pontos percentuais.
 18. Mostrar a rentabilidade de cada ativo em barras horizontais, do que mais rendeu ao que mais perdeu, em verde e vermelho.
+19. Ver, no painel de histórico do ativo, a máxima e a mínima de 52 semanas, o volume e o valor de mercado (dados que já vêm na cotação da brapi, sem requisição extra; "—" quando a API não informa).
 
 ## Requisitos não funcionais
 
@@ -106,7 +107,7 @@
 - **Limitação conhecida:** como o site é estático (GitHub Pages), o token da brapi é embutido no JavaScript publicado e pode ser visto por quem inspecionar o código do site. Ele não fica no repositório (vem de um *secret* do GitHub Actions no deploy), mas não há como escondê-lo sem um servidor próprio. O risco é alguém usar a cota gratuita do token.
 
 ### Qualidade
-- **60 testes automatizados** com Vitest, em 7 arquivos, cobrindo cálculos, ordenação, formatação, evolução do patrimônio e comparação com o Ibovespa, distribuição da rosca, exportação em CSV e a atualização automática.
+- **62 testes automatizados** com Vitest, em 7 arquivos, cobrindo cálculos, ordenação, formatação, evolução do patrimônio e comparação com o Ibovespa, distribuição da rosca, exportação em CSV e a atualização automática.
 - Lint (Oxlint) sem erros nem avisos.
 
 ## Como acessar e usar
@@ -143,7 +144,7 @@ VITE_BRAPI_TOKEN=seu_token_aqui
 
 | Comando | O que faz |
 |---|---|
-| `npm test` | Roda os 60 testes automatizados (Vitest) |
+| `npm test` | Roda os 62 testes automatizados (Vitest) |
 | `npm run lint` | Roda o Oxlint |
 | `npm run build` | Gera a versão de produção na pasta `dist/` |
 | `npm run preview` | Serve a versão de produção em http://localhost:4173/vault/ |
