@@ -1,4 +1,4 @@
-import { useMoeda } from '../hooks/useMoeda.js'
+import { useMoeda, VALOR_OCULTO } from '../hooks/useMoeda.js'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   Chart as ChartJS,
@@ -43,7 +43,7 @@ const formatarDataCompleta = (ms) =>
 // - aoFechar: chamado quando o painel é fechado (por qualquer caminho)
 function PainelHistorico({ posicao, aoFechar }) {
   // moeda(v) já respeita o modo privacidade (mostra "R$ •••••" quando ligado)
-  const { moeda } = useMoeda()
+  const { moeda, ocultar } = useMoeda()
   const { ticker, precoMedio, cotacao } = posicao
   const refDialogo = useRef(null)
   const [estado, setEstado] = useState({ status: 'carregando', historico: [], erro: '' })
@@ -158,11 +158,11 @@ function PainelHistorico({ posicao, aoFechar }) {
                 </dd>
               </div>
               <div className="indicador">
-                <dt className="indicador__rotulo">Mínima</dt>
+                <dt className="indicador__rotulo">Mínima em 3 meses</dt>
                 <dd className="indicador__valor">{moeda(resumo.minimo)}</dd>
               </div>
               <div className="indicador">
-                <dt className="indicador__rotulo">Máxima</dt>
+                <dt className="indicador__rotulo">Máxima em 3 meses</dt>
                 <dd className="indicador__valor">{moeda(resumo.maximo)}</dd>
               </div>
             </dl>
@@ -184,7 +184,7 @@ function PainelHistorico({ posicao, aoFechar }) {
               <div className="indicador">
                 <dt className="indicador__rotulo">Valor de mercado</dt>
                 <dd className="indicador__valor">
-                  {semDado(cotacao?.valorMercado) ? '—' : `R$ ${formatarCompacto(cotacao.valorMercado)}`}
+                  {semDado(cotacao?.valorMercado) ? '—' : ocultar ? VALOR_OCULTO : `R$ ${formatarCompacto(cotacao.valorMercado)}`}
                 </dd>
               </div>
             </dl>

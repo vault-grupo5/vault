@@ -40,8 +40,13 @@
     display: none;
   }
 
+  /* Com o botão "Importar" são 5 ícones: um pouco menores e mais juntos para logo + botões caberem numa linha */
+  .topo__acoes {
+    gap: 6px;
+  }
+
   .topo__acoes .botao {
-    width: 40px;
+    width: 38px;
     padding: 0;
   }
 }

@@ -76,7 +76,8 @@
 
 /* Segunda linha de números (mercado) logo abaixo da primeira */
 .painel__numeros + .painel__numeros {
-  margin-top: 10px;
+  /* o contêiner já tem um espaço grande entre blocos; aqui queremos só o espaço pequeno entre linhas de números */
+  margin-top: calc(10px - var(--espaco) * 1.25);
 }
 
 /* ---------- Gráfico ---------- */
