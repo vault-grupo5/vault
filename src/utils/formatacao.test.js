@@ -1,7 +1,9 @@
 // Testes da formatação para o padrão brasileiro (utils/formatacao.js). Rodar com: npm test
 import { describe, expect, it } from 'vitest'
 import {
+  ehValorGrande,
   formatarCompacto,
+  formatarMoedaCompleta,
   formatarHorario,
   formatarMoeda,
   formatarMoedaComSinal,
@@ -103,5 +105,27 @@ describe('formatarCompacto', () => {
     expect(formatarCompacto(undefined)).toBe('—')
     expect(formatarCompacto(null)).toBe('—')
     expect(formatarCompacto(NaN)).toBe('—')
+  })
+})
+
+describe('valores em R$ grandes (formato compacto)', () => {
+  it('abaixo de R$ 1 bilhão mostra o valor completo', () => {
+    expect(ehValorGrande(999_999_999.99)).toBe(false)
+    expect(comEspacoNormal(formatarMoeda(999_999_999.99))).toBe('R$ 999.999.999,99')
+  })
+
+  it('a partir de R$ 1 bilhão usa o formato compacto', () => {
+    expect(ehValorGrande(1_000_000_000)).toBe(true)
+    expect(comEspacoNormal(formatarMoeda(1_240_000_000))).toBe('R$ 1,24 bi')
+    expect(comEspacoNormal(formatarMoeda(25_000_000_000_000))).toBe('R$ 25 tri')
+    expect(comEspacoNormal(formatarMoedaComSinal(-1_500_000_000))).toBe('−R$ 1,5 bi')
+  })
+
+  it('o valor completo continua disponível para o tooltip', () => {
+    expect(comEspacoNormal(formatarMoedaCompleta(1_240_000_000))).toBe('R$ 1.240.000.000,00')
+  })
+
+  it('separarCentavos não corta o formato compacto', () => {
+    expect(separarCentavos(1_240_000_000).centavos).toBe('')
   })
 })

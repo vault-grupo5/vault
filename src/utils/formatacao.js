@@ -15,8 +15,28 @@ const formatadorPorcentagem = new Intl.NumberFormat('pt-BR', {
 
 const formatadorQuantidade = new Intl.NumberFormat('pt-BR')
 
-// 1234.5 → "R$ 1.234,50"
+// A partir de R$ 1 bilhão o valor completo não cabe nos cartões: mostramos "R$ 1,24 bi".
+// (o valor completo continua disponível com formatarMoedaCompleta, usado no title/tooltip)
+const LIMITE_COMPACTO = 1_000_000_000
+const formatadorMoedaCompacta = new Intl.NumberFormat('pt-BR', {
+  style: 'currency',
+  currency: 'BRL',
+  notation: 'compact',
+  compactDisplay: 'short',
+  maximumFractionDigits: 2,
+})
+
+export function ehValorGrande(valor) {
+  return Math.abs(valor ?? 0) >= LIMITE_COMPACTO
+}
+
+// 1234.5 → "R$ 1.234,50"   |   1240000000 → "R$ 1,24 bi"
 export function formatarMoeda(valor) {
+  return ehValorGrande(valor) ? formatadorMoedaCompacta.format(valor) : formatadorMoeda.format(valor ?? 0)
+}
+
+// Sempre o valor inteiro, mesmo se grande: "R$ 1.240.000.000,00" (para title/tooltip)
+export function formatarMoedaCompleta(valor) {
   return formatadorMoeda.format(valor ?? 0)
 }
 
@@ -24,6 +44,7 @@ export function formatarMoeda(valor) {
 // 1234.5 → { inteiro: "R$ 1.234", centavos: ",50" }
 export function separarCentavos(valor) {
   const texto = formatarMoeda(valor)
+  if (ehValorGrande(valor)) return { inteiro: texto, centavos: '' } // formato compacto não tem centavos
   const posicaoVirgula = texto.lastIndexOf(',')
   return {
     inteiro: texto.slice(0, posicaoVirgula),
@@ -31,8 +52,6 @@ export function separarCentavos(valor) {
   }
 }
 
-// 2.345 → "+2,35%" e -1.2 → "−1,20%"
-// O sinal de mais deixa claro que é ganho; o de menos é o "−" tipográfico (mais legível)
 // Número grande em forma curta: 588547212774 -> "588,5 bi", 42530700 -> "42,5 mi".
 // Devolve "—" quando o dado não existe (a API nem sempre manda).
 export function formatarCompacto(valor) {
@@ -40,6 +59,8 @@ export function formatarCompacto(valor) {
   return new Intl.NumberFormat('pt-BR', { notation: 'compact', maximumFractionDigits: 1 }).format(valor)
 }
 
+// 2.345 → "+2,35%" e -1.2 → "−1,20%"
+// O sinal de mais deixa claro que é ganho; o de menos é o "−" tipográfico (mais legível)
 export function formatarPorcentagem(valor) {
   const numero = valor ?? 0
   const sinal = numero > 0 ? '+' : numero < 0 ? '−' : ''

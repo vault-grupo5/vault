@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import { formatarMoeda, formatarMoedaComSinal } from '../utils/formatacao.js'
+import { ehValorGrande, formatarMoeda, formatarMoedaComSinal, formatarMoedaCompleta } from '../utils/formatacao.js'
 
 // Modo privacidade: quando ligado, todos os valores em R$ aparecem como "R$ •••••"
 // (útil para abrir o VAULT em público ou compartilhar a tela). As porcentagens continuam visíveis.
@@ -21,5 +21,8 @@ export function useMoeda() {
     ocultar,
     moeda: (valor) => (ocultar ? VALOR_OCULTO : formatarMoeda(valor)),
     moedaComSinal: (valor) => (ocultar ? VALOR_OCULTO : formatarMoedaComSinal(valor)),
+    // Texto para o atributo title: o valor COMPLETO quando a tela mostra a versão compacta ("R$ 1,24 bi").
+    // Devolve undefined (sem title) para valores normais e no modo privacidade.
+    titulo: (valor) => (!ocultar && ehValorGrande(valor) ? formatarMoedaCompleta(valor) : undefined),
   }
 }

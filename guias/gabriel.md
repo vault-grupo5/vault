@@ -87,5 +87,9 @@ async function aoEnviar(evento) {
 5. **Por que usar `useRef` para o foco, e não o estado?**
    O foco é uma ação no elemento da página, não um dado que aparece na tela. A ref dá acesso direto ao `<input>` para chamar `.focus()`, sem precisar redesenhar o componente.
 
+## Novidade: limites de quantidade e preço médio
+Sem limite, alguém podia digitar `99999999999999999999`: o JavaScript só guarda inteiros com exatidão até ~9 quadrilhões, então o número virava `1e20`, e valores em R$ enormes estouravam os cartões. Agora a **quantidade** vai de 1 a 10.000.000 e o **preço médio** de R$ 0,01 a R$ 1.000.000,00. As regras ficam em `utils/ativo.js` (`erroDeQuantidade` e `erroDePrecoMedio`, que devolvem o texto do erro ou `''`) e são usadas no `FormularioAtivo.jsx`, na edição da `LinhaAtivo.jsx` e na importação de CSV: uma regra só, mensagens iguais ("A quantidade máxima é 10.000.000.").
+- **Pergunta possível:** "Por que não usar `max` no `<input>`?" → o formulário usa `noValidate` e mensagens próprias (acessíveis e em português), e a mesma regra precisa valer fora do formulário (edição e CSV), então ela fica numa função reaproveitável. Testes: `ativo.test.js`.
+
 ## Testes relacionados
 As regras de leitura de número (`lerNumero`, que aceita "1.234,56") são testadas em `src/utils/formatacao.test.js`.

@@ -1,4 +1,4 @@
-import { separarCentavos } from '../utils/formatacao.js'
+import { ehValorGrande, formatarMoedaCompleta, separarCentavos } from '../utils/formatacao.js'
 import { useMoeda, VALOR_OCULTO } from '../hooks/useMoeda.js'
 
 // Mostra um valor em reais com os centavos "apagados" (cor mais fraca).
@@ -21,7 +21,13 @@ function Dinheiro({ valor, className = '' }) {
   const { inteiro, centavos } = separarCentavos(valor)
 
   return (
-    <span className={`dinheiro ${className}`}>
+    // Valor grande aparece compacto ("R$ 1,24 bi"); o title mostra o valor completo
+    // --n = nº de caracteres, para o CSS poder encolher a fonte de valores longos (ver ListaCarteira.css)
+    <span
+      className={`dinheiro ${className}`}
+      style={{ '--n': inteiro.length + centavos.length }}
+      title={ehValorGrande(valor) ? formatarMoedaCompleta(valor) : undefined}
+    >
       {inteiro}
       <span className="dinheiro__centavos">{centavos}</span>
     </span>

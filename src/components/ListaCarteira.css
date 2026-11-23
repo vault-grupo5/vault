@@ -58,6 +58,9 @@
 
 .tabela-rolagem {
   overflow-x: auto; /* se mesmo assim não couber, rola de lado em vez de quebrar a página */
+  /* position: relative faz o texto escondido ".sr-only" (position: absolute) da tabela ser cortado por esta
+     área de rolagem; sem isso ele aparecia "fora" dela e criava uma rolagem lateral na página inteira */
+  position: relative;
   margin: 0 calc(var(--espaco) * -1.25); /* encosta a tabela nas bordas do cartão */
 }
 
@@ -313,7 +316,7 @@
   .linha {
     position: relative;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* minmax(0, ...) deixa a coluna encolher em vez de o valor vazar */
     gap: 12px 16px;
     padding: 14px;
     margin-bottom: 10px;
@@ -332,6 +335,19 @@
     padding: 0;
     text-align: left;
     white-space: normal;
+    min-width: 0;
+    overflow-wrap: anywhere; /* valor muito longo quebra em vez de vazar do cartão */
+  }
+
+  /* Valores longos encolhem para caber na coluna do cartão (cqi = largura da própria célula;
+     --n = nº de caracteres do valor, ~0,6em cada). Valores normais ficam do tamanho de sempre. */
+  .tabela .linha td[data-rotulo] {
+    container-type: inline-size;
+  }
+
+  .tabela .linha .dinheiro,
+  .tabela .linha .linha__lucro-valor {
+    font-size: min(1em, max(0.7em, calc(100cqi / (var(--n, 8) * 0.6))));
   }
 
   /* O ativo ocupa a linha toda, no topo do cartão */
@@ -387,10 +403,11 @@
 }
 
 /* Cartões numa lista "média" (ex: PC, onde a lista divide espaço com o formulário):
-   os 5 números ficam lado a lado numa linha só, em vez de 2 por linha */
-@container (min-width: 560px) and (max-width: 720px) {
+   os números ficam 3 por linha, em vez de 2. (Eram 5 por linha, mas valores de centenas de milhões
+   de reais não cabiam em colunas tão estreitas e quebravam no meio do número.) */
+@container (min-width: 480px) and (max-width: 720px) {
   .linha {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .linha__preco,

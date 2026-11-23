@@ -6,6 +6,8 @@
 }
 
 .resumo__principal {
+  /* container-type: permite usar "cqi" (largura do próprio bloco) para ajustar a fonte do total */
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -18,8 +20,11 @@
 
 /* Valor total grande; clamp() deixa a fonte menor no celular e maior no PC */
 .resumo__total {
-  font-size: clamp(2.2rem, 7vw, 3.4rem);
+  /* O mínimo entre o tamanho normal e o que cabe na largura do bloco: valores curtos não mudam;
+     valores longos (--n = nº de caracteres, ~0,64em por caractere) encolhem em vez de estourar. */
+  font-size: min(clamp(2.2rem, 7vw, 3.4rem), max(1.4rem, calc(100cqi / (var(--n, 10) * 0.64))));
   font-weight: 700;
+  overflow-wrap: anywhere; /* último recurso: quebra em vez de vazar do cartão */
   letter-spacing: -0.03em;
   line-height: 1.1;
 }
@@ -61,6 +66,9 @@
 }
 
 .indicador {
+  /* cqi nos filhos = largura deste cartão; min-width 0 deixa o cartão encolher dentro da grade */
+  container-type: inline-size;
+  min-width: 0;
   padding: 12px 14px;
   border-radius: 12px;
   background: var(--cor-fundo);
@@ -79,15 +87,23 @@
 
 .indicador__valor {
   margin: 4px 0 0;
-  font-size: 1.05rem;
+  /* mesmo truque do total: valor longo encolhe até 0,7rem e depois quebra linha, nunca vaza */
+  font-size: min(1.05rem, max(0.7rem, calc(100cqi / (var(--n, 8) * 0.58))));
   font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
 .indicador__valor--hoje {
+  font-size: 1.05rem; /* aqui o tamanho é ajustado no <span> do valor, não no bloco com a pílula */
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
+}
+
+.indicador__valor--hoje > span:first-child {
+  font-size: min(1.05rem, max(0.7rem, calc(100cqi / (var(--n, 8) * 0.58))));
+  overflow-wrap: anywhere;
 }
 
 
@@ -103,5 +119,10 @@
   .resumo {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
     align-items: center;
+  }
+
+  /* Na metade direita 4 cartões lado a lado ficam estreitos; 2 por linha dá espaço para valores longos */
+  .resumo__indicadores {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

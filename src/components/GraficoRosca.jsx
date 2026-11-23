@@ -39,7 +39,7 @@ function lerVisao() {
 // Props:
 // - posicoes: ativos com os cálculos feitos, na ORDEM DE CADASTRO (a cor de cada fatia depende dela)
 function GraficoRosca({ posicoes }) {
-  const { moeda } = useMoeda()
+  const { moeda, titulo } = useMoeda()
   const refGrafico = useRef(null)
   const [visao, setVisao] = useState(lerVisao)
 
@@ -173,7 +173,9 @@ function GraficoRosca({ posicoes }) {
           {/* Total no furo do meio. aria-hidden: a descrição do gráfico já diz o total */}
           <div className="rosca__centro" aria-hidden="true">
             <span className="rosca__rotulo">Total</span>
-            <span className="rosca__total">{moeda(total)}</span>
+            <span className="rosca__total" style={{ '--n': moeda(total).length }} title={titulo(total)}>
+              {moeda(total)}
+            </span>
             <span className="rosca__rotulo">
               {fatias.length} {unidade}
             </span>
@@ -198,7 +200,9 @@ function GraficoRosca({ posicoes }) {
                 {fatia.detalhe && <span className="legenda__detalhe">{fatia.detalhe}</span>}
               </span>
               <span className="legenda__percentual">{formatarParticipacao(fatia.percentual)}</span>
-              <span className="legenda__valor">{moeda(fatia.valor)}</span>
+              <span className="legenda__valor" title={titulo(fatia.valor)}>
+                {moeda(fatia.valor)}
+              </span>
             </li>
           ))}
         </ul>

@@ -6,7 +6,7 @@
 // Função pura: recebe o TEXTO do arquivo e devolve { ativos, erros }.
 // Se houver QUALQUER erro, nada é importado (tudo ou nada), para a carteira não ficar pela metade.
 
-import { criarAtivo, FORMATO_TICKER } from './ativo.js'
+import { criarAtivo, erroDePrecoMedio, erroDeQuantidade, FORMATO_TICKER } from './ativo.js'
 import { lerNumero } from './formatacao.js'
 
 export const MAX_ATIVOS_IMPORTACAO = 200
@@ -99,13 +99,16 @@ export function lerCsvDaCarteira(texto) {
     const precoMedio = lerNumero(linha[colPreco] ?? '')
     const problemas = []
 
-    if (!FORMATO_TICKER.test(ticker)) problemas.push(`ticker "${ticker}" inválido (use o formato da B3, ex: PETR4)`)
-    else if (vistos.has(ticker)) problemas.push(`ticker ${ticker} repetido`)
-    if (!Number.isInteger(quantidade) || quantidade <= 0) problemas.push('quantidade precisa ser um número inteiro maior que zero')
-    if (!Number.isFinite(precoMedio) || precoMedio <= 0) problemas.push('preço médio precisa ser um número maior que zero (ex: 32,50)')
+    if (!FORMATO_TICKER.test(ticker)) problemas.push(`Ticker "${ticker}" inválido (use o formato da B3, ex: PETR4).`)
+    else if (vistos.has(ticker)) problemas.push(`Ticker ${ticker} repetido.`)
+    // Mesmas regras e limites do formulário (utils/ativo.js)
+    const erroQuantidade = erroDeQuantidade(quantidade)
+    const erroPreco = erroDePrecoMedio(precoMedio)
+    if (erroQuantidade) problemas.push(erroQuantidade)
+    if (erroPreco) problemas.push(erroPreco)
 
     if (problemas.length > 0) {
-      erros.push(`${onde}: ${problemas.join('; ')}.`)
+      erros.push(`${onde}: ${problemas.join(' ')}`)
       continue
     }
     vistos.add(ticker)

@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { Plus } from 'lucide-react'
-import { criarAtivo, FORMATO_TICKER } from '../utils/ativo.js'
+import { criarAtivo, erroDePrecoMedio, erroDeQuantidade, FORMATO_TICKER } from '../utils/ativo.js'
 import { lerNumero } from '../utils/formatacao.js'
 import { buscarCotacao } from '../services/brapi.js'
 import CampoTicker from './CampoTicker.jsx'
@@ -24,13 +24,12 @@ function validar(valores, tickersExistentes) {
     erros.ticker = `${ticker} já está na carteira. Use o botão editar na lista.`
   }
 
-  if (!Number.isInteger(quantidade) || quantidade <= 0) {
-    erros.quantidade = 'Informe uma quantidade inteira maior que zero.'
-  }
+  // Os limites (mínimo e máximo) ficam em utils/ativo.js, compartilhados com a lista e a importação
+  const erroQuantidade = erroDeQuantidade(quantidade)
+  if (erroQuantidade) erros.quantidade = erroQuantidade
 
-  if (!Number.isFinite(precoMedio) || precoMedio <= 0) {
-    erros.precoMedio = 'Informe um preço maior que zero (ex: 32,50).'
-  }
+  const erroPreco = erroDePrecoMedio(precoMedio)
+  if (erroPreco) erros.precoMedio = erroPreco
 
   return erros
 }

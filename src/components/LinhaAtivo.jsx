@@ -5,6 +5,7 @@ import Dinheiro from './Dinheiro.jsx'
 import Pilula from './Pilula.jsx'
 import LogoAtivo from './LogoAtivo.jsx'
 import { ehExemplo } from '../utils/carteiraExemplo.js'
+import { erroDePrecoMedio, erroDeQuantidade } from '../utils/ativo.js'
 import { formatarPorcentagem, formatarQuantidade, lerNumero } from '../utils/formatacao.js'
 
 // Uma linha da tabela de ativos.
@@ -21,7 +22,7 @@ import { formatarPorcentagem, formatarQuantidade, lerNumero } from '../utils/for
 // - aoAbrirHistorico(ticker): abre o painel com o gráfico de evolução do preço
 function LinhaAtivo({ posicao, carregando, erro, aoEditar, aoRemover, aoAbrirHistorico }) {
   // moeda(v) já respeita o modo privacidade (mostra "R$ •••••" quando ligado)
-  const { moeda, moedaComSinal } = useMoeda()
+  const { moeda, moedaComSinal, titulo } = useMoeda()
   const [modo, setModo] = useState('ver')
   const [rascunho, setRascunho] = useState({ quantidade: '', precoMedio: '' })
   const [erroEdicao, setErroEdicao] = useState('')
@@ -61,12 +62,10 @@ function LinhaAtivo({ posicao, carregando, erro, aoEditar, aoRemover, aoAbrirHis
     const quantidade = lerNumero(rascunho.quantidade)
     const precoMedio = lerNumero(rascunho.precoMedio)
 
-    if (!Number.isInteger(quantidade) || quantidade <= 0) {
-      setErroEdicao('Quantidade deve ser um número inteiro maior que zero.')
-      return
-    }
-    if (!Number.isFinite(precoMedio) || precoMedio <= 0) {
-      setErroEdicao('Preço médio deve ser maior que zero.')
+    // Mesmos limites do cadastro (utils/ativo.js)
+    const erro = erroDeQuantidade(quantidade) || erroDePrecoMedio(precoMedio)
+    if (erro) {
+      setErroEdicao(erro)
       return
     }
 
@@ -199,7 +198,12 @@ function LinhaAtivo({ posicao, carregando, erro, aoEditar, aoRemover, aoAbrirHis
       <td data-rotulo="Lucro / prejuízo">
         {posicao.temCotacao ? (
           <div className="linha__lucro">
-            <span className={`texto--${posicao.lucro >= 0 ? 'ganho' : 'perda'}`}>
+            {/* --n: nº de caracteres; no modo cartão o CSS encolhe o valor se for longo demais */}
+            <span
+              className={`linha__lucro-valor texto--${posicao.lucro >= 0 ? 'ganho' : 'perda'}`}
+              style={{ '--n': moedaComSinal(posicao.lucro).length }}
+              title={titulo(posicao.lucro)}
+            >
               {moedaComSinal(posicao.lucro)}
             </span>
             <Pilula valor={posicao.lucroPercentual}>{formatarPorcentagem(posicao.lucroPercentual)}</Pilula>

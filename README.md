@@ -45,7 +45,7 @@
 
 ## Requisitos funcionais
 
-1. Cadastrar ativo (código, quantidade e preço médio). Antes de salvar, o código é conferido na brapi.
+1. Cadastrar ativo (código, quantidade e preço médio, dentro dos limites acima). Antes de salvar, o código é conferido na brapi.
 2. Editar a quantidade e o preço médio de um ativo, e remover um ativo (a remoção pede confirmação na própria linha e, depois de removido, o aviso oferece "Desfazer" por 7 segundos, devolvendo o ativo à mesma posição da lista).
 3. Buscar a cotação atual de cada ativo na brapi, com um botão "Atualizar" para forçar uma nova busca.
 4. Calcular e mostrar o valor total e o lucro/prejuízo, por ativo e da carteira toda, em R$ e em %, além da variação do dia.
@@ -98,17 +98,18 @@
 - Tudo funciona pelo teclado: sugestões com setas e Enter, painel do ativo fecha com Esc e devolve o foco, botão "Pular para o conteúdo", página atual marcada no menu.
 - Ao trocar de página, o foco vai para o título da página nova (o leitor de tela anuncia onde a pessoa chegou).
 - Contraste das cores conferido (WCAG) nos dois temas; cores dos gráficos escolhidas e testadas para pessoas com daltonismo; ganho e perda também indicados por ícone, sinal e direção, não só pela cor.
+- Valores em R$ muito longos não estouram os cartões: a fonte encolhe para caber e, a partir de R$ 1 bilhão, o valor aparece em formato compacto (ex.: "R$ 1,24 bi"), com o valor completo ao passar o mouse.
 - Cada gráfico tem descrição para leitor de tela e uma tabela com os mesmos dados.
 - Animações desligadas para quem ativou "reduzir movimento" no sistema.
 
 ### Segurança
-- Validação de todos os campos do formulário.
+- Validação de todos os campos do formulário, com limites: quantidade inteira de 1 a 10.000.000 e preço médio de R$ 0,01 a R$ 1.000.000,00 (no cadastro, na edição da lista e na importação de CSV). Sem limite, números gigantes perdem precisão no JavaScript e estouram a tela.
 - Os dados da carteira ficam só no navegador da pessoa; o VAULT não tem servidor nem banco de dados.
 - O CSV exportado é protegido contra "injeção de fórmula" (textos vindos da API que começam com `=`, `+`, `-` ou `@`).
 - **Limitação conhecida:** como o site é estático (GitHub Pages), o token da brapi é embutido no JavaScript publicado e pode ser visto por quem inspecionar o código do site. Ele não fica no repositório (vem de um *secret* do GitHub Actions no deploy), mas não há como escondê-lo sem um servidor próprio. O risco é alguém usar a cota gratuita do token.
 
 ### Qualidade
-- **68 testes automatizados** com Vitest, em 8 arquivos, cobrindo cálculos, ordenação, formatação, importação de CSV, evolução do patrimônio e comparação com o Ibovespa, distribuição da rosca, exportação em CSV e a atualização automática.
+- **80 testes automatizados** com Vitest, em 9 arquivos, cobrindo cálculos, ordenação, formatação, importação de CSV, evolução do patrimônio e comparação com o Ibovespa, distribuição da rosca, exportação em CSV e a atualização automática.
 - Lint (Oxlint) sem erros nem avisos.
 
 ## Como acessar e usar
@@ -145,7 +146,7 @@ VITE_BRAPI_TOKEN=seu_token_aqui
 
 | Comando | O que faz |
 |---|---|
-| `npm test` | Roda os 68 testes automatizados (Vitest) |
+| `npm test` | Roda os 80 testes automatizados (Vitest) |
 | `npm run lint` | Roda o Oxlint |
 | `npm run build` | Gera a versão de produção na pasta `dist/` |
 | `npm run preview` | Serve a versão de produção em http://localhost:4173/vault/ |

@@ -42,7 +42,7 @@ describe('lerCsvDaCarteira', () => {
     expect(ativos).toEqual([])
     expect(erros).toHaveLength(3)
     expect(erros[0]).toMatch(/^Linha 2:.*quantidade/)
-    expect(erros[1]).toMatch(/^Linha 3:.*ticker/)
+    expect(erros[1]).toMatch(/^Linha 3:.*Ticker/)
     expect(erros[2]).toMatch(/^Linha 4:.*preço médio/)
   })
 
@@ -50,6 +50,24 @@ describe('lerCsvDaCarteira', () => {
     const { erros } = lerCsvDaCarteira(`${CAB}\nPETR4;;10;5\nPETR4;;10;5\nVALE3;;1,5;5`)
     expect(erros).toHaveLength(2)
     expect(erros[0]).toMatch(/repetido/)
-    expect(erros[1]).toMatch(/inteiro/)
+    expect(erros[1]).toMatch(/inteira/)
+  })
+})
+
+describe('limites na importação', () => {
+  it('recusa quantidade e preço fora dos limites, com o número da linha', () => {
+    const { ativos, erros } = lerCsvDaCarteira(`${CAB}\nPETR4;;10000001;5\nVALE3;;10;1000000,01\nITUB4;;10;0,001\nBBAS3;;99999999999999999999;5`)
+    expect(ativos).toEqual([])
+    expect(erros).toHaveLength(4)
+    expect(erros[0]).toBe('Linha 2: A quantidade máxima é 10.000.000.')
+    expect(erros[1]).toBe('Linha 3: O preço médio máximo é R$ 1.000.000,00.')
+    expect(erros[2]).toBe('Linha 4: O preço médio mínimo é R$ 0,01.')
+    expect(erros[3]).toMatch(/^Linha 5: A quantidade máxima/)
+  })
+
+  it('aceita exatamente os valores-limite', () => {
+    const { ativos, erros } = lerCsvDaCarteira(`${CAB}\nPETR4;;10000000;1000000,00\nVALE3;;1;0,01`)
+    expect(erros).toEqual([])
+    expect(ativos).toHaveLength(2)
   })
 })

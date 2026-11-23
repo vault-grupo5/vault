@@ -12,6 +12,7 @@
   width: 100%;
   max-width: 240px;
   margin: 0 auto;
+  container-type: inline-size; /* cqi = largura da rosca: o total do meio encolhe para caber no furo */
 }
 
 .grafico__vazio {
@@ -125,7 +126,8 @@
 }
 
 .rosca__total {
-  font-size: 1.15rem;
+  /* o furo mede ~60% da rosca; --n = nº de caracteres do valor (~0,62em cada) */
+  font-size: min(1.15rem, calc(58cqi / (var(--n, 10) * 0.62)));
   font-weight: 800;
   letter-spacing: -0.02em;
 }
