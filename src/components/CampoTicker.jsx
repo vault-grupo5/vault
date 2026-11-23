@@ -63,6 +63,9 @@ function CampoTicker({ id, valor, aoMudar, aoEscolher, tickersExistentes, inputR
         if (mostrarOpcoes && indiceAtivo >= 0) {
           evento.preventDefault()
           escolher(sugestoes[indiceAtivo])
+        } else {
+          // Vai enviar o formulário: fecha a lista para ela não cobrir a mensagem de erro
+          setAberta(false)
         }
         break
       case 'Escape':
@@ -103,7 +106,9 @@ function CampoTicker({ id, valor, aoMudar, aoEscolher, tickersExistentes, inputR
         value={valor}
         onChange={aoDigitar}
         onKeyDown={aoApertarTecla}
-        onFocus={() => setAberta(true)}
+        // Não abrimos a lista no onFocus: depois de um erro o formulário devolve o foco ao campo
+        // por código, e a lista ("Nenhuma ação encontrada") reaparecia por cima da mensagem de erro.
+        // A lista abre ao digitar ou com a seta para baixo.
         // Ao sair do campo a lista fecha. Os cliques nas opções usam onMouseDown
         // (que acontece ANTES do blur), por isso a escolha não se perde.
         onBlur={() => setAberta(false)}

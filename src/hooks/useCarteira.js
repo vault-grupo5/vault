@@ -98,8 +98,9 @@ export function useCarteira() {
 
   // Mostra um aviso novo. O id (contador) faz o Aviso reiniciar a contagem de tempo
   // mesmo que o texto seja igual ao anterior.
-  const mostrarAviso = useCallback((texto, tipo) => {
-    setAviso((anterior) => ({ id: (anterior?.id ?? 0) + 1, texto, tipo }))
+  // "acao" (opcional) = { rotulo, aoClicar }: um botão dentro do aviso, ex: "Desfazer".
+  const mostrarAviso = useCallback((texto, tipo, acao) => {
+    setAviso((anterior) => ({ id: (anterior?.id ?? 0) + 1, texto, tipo, acao }))
   }, [])
 
   // useCallback: a função fica a mesma entre renders, senão o timer do Aviso reiniciaria à toa
@@ -123,10 +124,41 @@ export function useCarteira() {
     if (ativo) mostrarAviso(`${ativo.ticker} atualizado`, 'sucesso')
   }
 
+  // Remove o ativo e oferece "Desfazer" no aviso por alguns segundos.
+  // Guardamos o ativo e a posição dele na lista para devolvê-lo exatamente no mesmo lugar
+  // (a cor do ativo nos gráficos depende da ordem de cadastro).
   function removerAtivo(id) {
-    const ativo = ativos.find((a) => a.id === id)
+    const indice = ativos.findIndex((a) => a.id === id)
+    if (indice === -1) return
+    const ativo = ativos[indice]
     setAtivos((atuais) => atuais.filter((a) => a.id !== id))
-    if (ativo) mostrarAviso(`${ativo.ticker} removido da carteira`, 'remocao')
+    mostrarAviso(`${ativo.ticker} removido da carteira`, 'remocao', {
+      rotulo: 'Desfazer',
+      aoClicar: () => desfazerRemocao(ativo, indice),
+    })
+  }
+
+  // A função do botão "Desfazer" é criada na hora da remoção e roda segundos depois, quando o
+  // "ativos" daquela época já está velho. Por isso lemos a lista ATUAL por esta ref.
+  const ativosAtuais = useRef(ativos)
+  useEffect(() => {
+    ativosAtuais.current = ativos
+  }, [ativos])
+
+  function desfazerRemocao(ativo, indice) {
+    // Se a pessoa cadastrou o mesmo ticker de novo nesse meio tempo, não duplicamos
+    const restaurou = !ativosAtuais.current.some((a) => a.ticker === ativo.ticker)
+    if (restaurou) {
+      setAtivos((atuais) => {
+        const novos = [...atuais]
+        novos.splice(Math.min(indice, novos.length), 0, ativo)
+        return novos
+      })
+    }
+    mostrarAviso(
+      restaurou ? `${ativo.ticker} restaurado na carteira` : `${ativo.ticker} já está na carteira de novo`,
+      restaurou ? 'sucesso' : 'remocao',
+    )
   }
 
   // ---------- Carteira de exemplo ----------

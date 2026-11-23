@@ -88,5 +88,9 @@ if (precoCotacao !== precoAnterior) {
 5. **Como a tabela funciona no celular?**
    Com uma *container query* no CSS: quando a própria lista fica com menos de 720 px, cada linha vira um cartão e o título de cada coluna aparece em cima do valor (lido do atributo `data-rotulo` de cada célula).
 
+## Novidade: desfazer a remoção
+Depois de confirmar a remoção na linha, o aviso "PETR4 removido da carteira" ganhou o botão **Desfazer** (fica 7 segundos). Em `useCarteira.js`, `removerAtivo` guarda o ativo e a posição dele na lista e passa ao aviso uma `acao` com a função `desfazerRemocao`; essa função coloca o ativo de volta no mesmo lugar (a cor dele nos gráficos depende da ordem de cadastro). Se a pessoa cadastrou o mesmo ticker nesse meio tempo, não duplica. Como o botão roda segundos depois, a lista atual é lida por uma `ref` (o `ativos` capturado na remoção já estaria velho).
+- **Pergunta possível:** "Por que o Desfazer usa uma ref?" → a função foi criada quando o ativo foi removido e guarda o valor antigo de `ativos` (closure); a ref sempre aponta para a lista mais nova.
+
 ## Testes relacionados
 A ordenação usada pelo seletor "Ordenar por" é testada em `src/utils/ordenacao.test.js`.

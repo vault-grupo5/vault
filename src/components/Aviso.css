@@ -51,6 +51,23 @@
   font-weight: 500;
 }
 
+.aviso__acao {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: var(--raio-pilula);
+  background: transparent;
+  color: var(--cor-destaque-claro);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.aviso__acao:hover {
+  background: var(--cor-cartao-hover);
+}
+
 .aviso__fechar {
   display: grid;
   place-items: center;

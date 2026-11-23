@@ -35,7 +35,7 @@
 ## Recursos principais
 
 - **Visão geral:** patrimônio total (com animação e centavos em destaque mais fraco), total investido, lucro/prejuízo em R$ e %, variação do dia e um gráfico de rosca com a distribuição da carteira por ativo ou por setor, com o total no centro.
-- **Meus ativos:** cadastro com sugestões de ações enquanto se digita, lista com preço atual, valor e lucro de cada ativo, edição, remoção, ordenação e um painel com o gráfico dos últimos 3 meses de cada ativo, junto com máxima e mínima de 52 semanas, volume e valor de mercado.
+- **Meus ativos:** cadastro com sugestões de ações enquanto se digita, lista com preço atual, valor e lucro de cada ativo, edição, remoção (com botão "Desfazer" por alguns segundos), ordenação e um painel com o gráfico dos últimos 3 meses de cada ativo, junto com máxima e mínima de 52 semanas, volume e valor de mercado.
 - **Análises:** evolução do patrimônio nos últimos 3 meses, rentabilidade da carteira comparada ao Ibovespa e rentabilidade de cada ativo em barras.
 - **Carteira de exemplo** para conhecer o site sem cadastrar nada.
 - **Modo privacidade**, que esconde os valores em R$.
@@ -46,7 +46,7 @@
 ## Requisitos funcionais
 
 1. Cadastrar ativo (código, quantidade e preço médio). Antes de salvar, o código é conferido na brapi.
-2. Editar a quantidade e o preço médio de um ativo, e remover um ativo (a remoção pede confirmação na própria linha).
+2. Editar a quantidade e o preço médio de um ativo, e remover um ativo (a remoção pede confirmação na própria linha e, depois de removido, o aviso oferece "Desfazer" por 7 segundos, devolvendo o ativo à mesma posição da lista).
 3. Buscar a cotação atual de cada ativo na brapi, com um botão "Atualizar" para forçar uma nova busca.
 4. Calcular e mostrar o valor total e o lucro/prejuízo, por ativo e da carteira toda, em R$ e em %, além da variação do dia.
 5. Mostrar a distribuição da carteira num gráfico de rosca, por ativo ou por setor (setor informado pela brapi), com o total no centro.
@@ -72,7 +72,7 @@
 - Estados de carregamento (blocos cinza e progresso como "Carregando os históricos: 3 de 7").
 - Mensagens de erro em linguagem simples, com botão "Tentar de novo" quando nenhuma cotação carrega.
 - Telas vazias que indicam o próximo passo ("Cadastrar ativo", "Ver carteira de exemplo").
-- Avisos rápidos ao cadastrar, editar, remover e exportar.
+- Avisos rápidos ao cadastrar, editar, remover (com "Desfazer") e exportar.
 
 ### Responsividade
 - Funciona no celular e no computador. No celular a navegação vira uma barra inferior, os botões do topo viram ícones e a tabela de ativos vira cartões.

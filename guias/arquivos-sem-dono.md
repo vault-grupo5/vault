@@ -33,7 +33,7 @@ A coluna **"Ligado a"** só mostra com qual parte já dividida o arquivo convers
 | `DialogoImportacao.jsx` (+ .css) | Janela (`<dialog>`) do "Importar CSV": lista os erros do arquivo ou pede confirmação antes de substituir a carteira. | Hugo (parte do CSV) |
 | `AvisoExemplo.jsx` (+ .css) | Faixa roxa "Esta é uma carteira de exemplo" com o botão "Limpar exemplo". | — |
 | `BannerErro.jsx` (+ .css) | Faixa vermelha quando nenhuma cotação carrega, com "Tentar de novo". | Hugo |
-| `Aviso.jsx` (+ .css) | Aviso flutuante ("PETR4 adicionado à carteira"), que some sozinho. | — |
+| `Aviso.jsx` (+ .css) | Aviso flutuante ("PETR4 adicionado à carteira"), que some sozinho; pode ter um botão, como o "Desfazer" da remoção. | — |
 | `Carregando.jsx` | Bloco cinza enquanto uma página ou gráfico é baixado. | — |
 | `Logo.jsx` (+ .css) | Logo do VAULT (porta de cofre) em SVG, nas cores do tema. | Miguel (identidade) |
 | `LogoAtivo.jsx` (+ .css) | Logo da empresa vinda da brapi ou, se não houver, as iniciais. | Lucas |
