@@ -1,4 +1,5 @@
-import { Download, Eye, EyeOff, Moon, RefreshCw, Sun } from 'lucide-react'
+import { useRef } from 'react'
+import { Download, Eye, EyeOff, Moon, RefreshCw, Sun, Upload } from 'lucide-react'
 import Logo from './Logo.jsx'
 import { formatarHorario } from '../utils/formatacao.js'
 import './Cabecalho.css'
@@ -11,7 +12,7 @@ import './Cabecalho.css'
 // - horarioCotacao: horário (ISO) da cotação mais recente, vindo da brapi
 // - atualizando: true enquanto as cotações estão sendo buscadas
 // - temAtivos: false com a carteira vazia (aí não há o que atualizar nem exportar)
-// - aoAtualizar, aoExportar: ações dos botões
+// - aoAtualizar, aoExportar, aoImportar(arquivo): ações dos botões
 // - tema ("claro" ou "escuro") e aoAlternarTema: botão que troca o tema
 // - ocultarValores e aoAlternarPrivacidade: modo privacidade (esconde os valores em R$)
 function Cabecalho({
@@ -20,11 +21,13 @@ function Cabecalho({
   temAtivos,
   aoAtualizar,
   aoExportar,
+  aoImportar,
   tema,
   aoAlternarTema,
   ocultarValores,
   aoAlternarPrivacidade,
 }) {
+  const refArquivo = useRef(null) // o <input type=file> fica escondido; o botão "Importar" o aciona
   const temaClaro = tema === 'claro'
   const horario = formatarHorario(horarioCotacao)
 
@@ -82,6 +85,29 @@ function Cabecalho({
             <span className="botao__texto">Exportar CSV</span>
           </button>
         )}
+
+        {/* Importar CSV: sempre visível (serve justamente para a carteira vazia). O input escondido
+            recebe o arquivo; zerar o value permite escolher o MESMO arquivo duas vezes seguidas. */}
+        <input
+          ref={refArquivo}
+          type="file"
+          accept=".csv,text/csv"
+          hidden
+          onChange={(evento) => {
+            aoImportar(evento.target.files[0])
+            evento.target.value = ''
+          }}
+        />
+        <button
+          type="button"
+          className="botao botao--fantasma"
+          onClick={() => refArquivo.current?.click()}
+          aria-label="Importar CSV da carteira"
+          title="Carregar uma carteira de um CSV exportado pelo VAULT"
+        >
+          <Upload size={16} aria-hidden="true" />
+          <span className="botao__texto">Importar CSV</span>
+        </button>
 
         {/* Botão do tema. O ícone mostra para onde a pessoa VAI: sol (ir para o claro) ou lua (ir para o escuro) */}
         <button

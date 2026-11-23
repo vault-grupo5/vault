@@ -5,12 +5,16 @@ import { calcularPosicoes, calcularResumo } from '../utils/calculos.js'
 import { carregarOrdenacao, ordenarPosicoes, salvarOrdenacao } from '../utils/ordenacao.js'
 import { baixarArquivoCsv, gerarCsv, nomeDoArquivoCsv } from '../utils/exportarCsv.js'
 import { criarCarteiraExemplo, ehExemplo } from '../utils/carteiraExemplo.js'
+import { lerCsvDaCarteira } from '../utils/importarCsv.js'
 import { buscarCotacoes } from '../services/brapi.js'
 
 // De quanto em quanto tempo as cotações são atualizadas sozinhas.
 // A brapi grátis tem ~30 min de atraso e o cache dura 10 min, então 10 min basta.
 // Custo: com 5 ativos são 30 requisições por hora (o plano grátis permite 15.000 por mês).
 export const INTERVALO_ATUALIZACAO_MS = 10 * 60 * 1000
+
+// Um CSV de carteira é minúsculo; arquivos maiores que isso não podem ser uma carteira
+const TAMANHO_MAXIMO_CSV = 500 * 1024
 
 // Hook com TODO o estado da carteira: ativos, cotações, avisos, ordenação e as ações
 // (adicionar, editar, remover, exportar...).
@@ -149,6 +153,55 @@ export function useCarteira() {
     mostrarAviso('Carteira de exemplo removida', 'remocao')
   }
 
+  // ---------- Importar CSV ----------
+
+  // Estado do diálogo de importação: null (fechado), { tipo: 'erro', arquivo, mensagens }
+  // ou { tipo: 'confirmar', arquivo, ativos } (esperando a pessoa confirmar a substituição)
+  const [importacao, setImportacao] = useState(null)
+
+  // Recebe o arquivo escolhido, valida e só então decide: erro, confirmação ou importar direto.
+  async function importarCsv(arquivo) {
+    if (!arquivo) return
+    const nome = arquivo.name
+    if (arquivo.size > TAMANHO_MAXIMO_CSV) {
+      setImportacao({ tipo: 'erro', arquivo: nome, mensagens: ['O arquivo é grande demais para ser uma carteira (limite de 500 KB).'] })
+      return
+    }
+
+    let texto
+    try {
+      texto = await arquivo.text()
+    } catch {
+      setImportacao({ tipo: 'erro', arquivo: nome, mensagens: ['Não foi possível ler o arquivo.'] })
+      return
+    }
+
+    const { ativos: novos, erros } = lerCsvDaCarteira(texto)
+    if (erros.length > 0) {
+      setImportacao({ tipo: 'erro', arquivo: nome, mensagens: erros })
+      return
+    }
+
+    // Só pedimos confirmação se há ativos REAIS para perder (a carteira de exemplo pode ser trocada à vontade)
+    if (ativos.some((a) => !ehExemplo(a))) {
+      setImportacao({ tipo: 'confirmar', arquivo: nome, ativos: novos })
+    } else {
+      aplicarImportacao(novos)
+    }
+  }
+
+  function aplicarImportacao(novos) {
+    setAtivos(novos)
+    setImportacao(null)
+    mostrarAviso(`Carteira importada do CSV (${novos.length} ativo(s))`, 'sucesso')
+  }
+
+  function confirmarImportacao() {
+    if (importacao?.tipo === 'confirmar') aplicarImportacao(importacao.ativos)
+  }
+
+  const fecharImportacao = useCallback(() => setImportacao(null), [])
+
   // ---------- Valores calculados ----------
   // useMemo: só recalcula quando os ativos ou as cotações mudam
   const posicoes = useMemo(() => calcularPosicoes(ativos, cotacoes), [ativos, cotacoes])
@@ -195,12 +248,16 @@ export function useCarteira() {
     ordem,
     aviso,
     temExemplo,
+    importacao,
     // ações
     adicionarAtivo,
     editarAtivo,
     removerAtivo,
     mudarOrdem,
     exportarCarteira,
+    importarCsv,
+    confirmarImportacao,
+    fecharImportacao,
     carregarExemplo,
     limparExemplo,
     atualizarCotacoes,

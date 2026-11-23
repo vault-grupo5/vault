@@ -23,13 +23,14 @@ A coluna **"Ligado a"** só mostra com qual parte já dividida o arquivo convers
 |---|---|---|
 | `Layout.jsx` (+ .css) | Moldura de todas as páginas (menu, topo, avisos, conteúdo, rodapé). Leva o foco ao título ao trocar de página e tem o "Pular para o conteúdo". | — |
 | `Navegacao.jsx` (+ .css) | O menu: lateral no computador, barra embaixo no celular; marca a página atual. | — |
-| `Cabecalho.jsx` (+ .css) | Barra do topo: indicador "ao vivo", Atualizar, privacidade, Exportar CSV e tema. | Hugo (cotações) |
+| `Cabecalho.jsx` (+ .css) | Barra do topo: indicador "ao vivo", Atualizar, privacidade, Exportar CSV, Importar CSV e tema. | Hugo (cotações) |
 | `CampoTicker.jsx` (+ .css) | Campo do código com sugestões de ações (setas, Enter, Esc; acessível para leitor de tela). | Gabriel |
 | `PainelHistorico.jsx` (+ .css) | Janela (`<dialog>`) com o gráfico de 3 meses de um ativo, linha do preço médio e tabela. | Lucas (abre pela lista) |
 | `GraficoEvolucao.jsx` | Gráfico da evolução do patrimônio em 3 meses. | — |
 | `GraficoComparacao.jsx` | Gráfico da carteira × Ibovespa, em %. | — |
 | `GraficoRentabilidade.jsx` | Barras com a rentabilidade de cada ativo. | Vitor (lucro %) |
 | `Analises.css` | Estilos em comum dos 3 gráficos de Análises. | — |
+| `DialogoImportacao.jsx` (+ .css) | Janela (`<dialog>`) do "Importar CSV": lista os erros do arquivo ou pede confirmação antes de substituir a carteira. | Hugo (parte do CSV) |
 | `AvisoExemplo.jsx` (+ .css) | Faixa roxa "Esta é uma carteira de exemplo" com o botão "Limpar exemplo". | — |
 | `BannerErro.jsx` (+ .css) | Faixa vermelha quando nenhuma cotação carrega, com "Tentar de novo". | Hugo |
 | `Aviso.jsx` (+ .css) | Aviso flutuante ("PETR4 adicionado à carteira"), que some sozinho. | — |
@@ -61,6 +62,7 @@ A coluna **"Ligado a"** só mostra com qual parte já dividida o arquivo convers
 |---|---|---|
 | `formatacao.js` | Moeda em R$, porcentagem com sinal, horário, leitura de número digitado ("32,50"). | todos |
 | `ordenacao.js` | Ordenar a lista (cadastro, lucro, valor, nome) e guardar a escolha. | Lucas |
+| `importarCsv.js` | Lê o texto de um CSV exportado pelo VAULT e devolve `{ ativos, erros }` (tudo ou nada, com a linha de cada erro). | Lucas, Vitor |
 | `exportarCsv.js` | Gera e baixa o CSV da carteira (formato do Excel em português, proteção contra fórmulas). | Lucas, Vitor |
 | `agendador.js` | Regra da atualização automática: a cada 10 min, pausa com a aba escondida. | Hugo |
 | `evolucao.js` | Evolução do patrimônio em 3 meses e comparação com o Ibovespa. | Vitor (cálculos) |
@@ -82,6 +84,7 @@ A coluna **"Ligado a"** só mostra com qual parte já dividida o arquivo convers
 | `evolucao.test.js` | 12 | — |
 | `alocacao.test.js` | 8 | Miguel |
 | `exportarCsv.test.js` | 6 | — |
+| `importarCsv.test.js` | 6 | — |
 | `agendador.test.js` | 6 | — |
 
 ## Configuração e publicação

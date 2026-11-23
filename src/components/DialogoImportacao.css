@@ -1,0 +1,70 @@
+/* Janela de importação de CSV (DialogoImportacao.jsx) */
+
+.dialogo-importacao {
+  width: min(480px, calc(100vw - 24px));
+  max-height: calc(100svh - 24px);
+  padding: 0;
+  overflow: auto;
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: var(--raio);
+  background: var(--cor-cartao);
+  color: var(--cor-texto);
+  box-shadow: var(--sombra);
+}
+
+.dialogo-importacao::backdrop {
+  background: var(--cor-sobreposicao, rgba(5, 5, 10, 0.72));
+  backdrop-filter: blur(3px);
+}
+
+.dialogo-importacao__conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: calc(var(--espaco) * 1.25);
+}
+
+.dialogo-importacao__conteudo p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.dialogo-importacao__titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.dialogo-importacao__icone--erro {
+  color: var(--cor-perda);
+}
+
+.dialogo-importacao__icone--aviso {
+  color: var(--cor-aviso);
+}
+
+.dialogo-importacao__arquivo {
+  color: var(--cor-texto-secundario);
+  overflow-wrap: anywhere; /* nome de arquivo comprido não estoura a janela */
+}
+
+.dialogo-importacao__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding-left: 20px;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.dialogo-importacao__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 4px;
+}

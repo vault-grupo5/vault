@@ -40,7 +40,7 @@
 - **Carteira de exemplo** para conhecer o site sem cadastrar nada.
 - **Modo privacidade**, que esconde os valores em R$.
 - **Tema claro e escuro.**
-- **Exportação da carteira em CSV**, pronta para abrir no Excel.
+- **Exportação da carteira em CSV**, pronta para abrir no Excel, e **importação** do mesmo formato (valida o arquivo e pede confirmação antes de substituir a carteira).
 - **Atualização automática** das cotações a cada 10 minutos.
 
 ## Requisitos funcionais
@@ -64,6 +64,7 @@
 17. Comparar a rentabilidade da carteira com a do Ibovespa no mesmo período, em %, com a diferença em pontos percentuais.
 18. Mostrar a rentabilidade de cada ativo em barras horizontais, do que mais rendeu ao que mais perdeu, em verde e vermelho.
 19. Ver, no painel de histórico do ativo, a máxima e a mínima de 52 semanas, o volume e o valor de mercado (dados que já vêm na cotação da brapi, sem requisição extra; "—" quando a API não informa).
+20. Importar a carteira de um CSV no mesmo formato do exportado: o arquivo é validado (cabeçalho, ticker no formato da B3, quantidade inteira, preço médio, tickers repetidos), erros aparecem numa janela com a linha de cada problema, e uma carteira já cadastrada só é substituída depois de confirmação. Os tickers não são consultados na brapi na importação; um ticker que não existir aparece "sem cotação" na lista.
 
 ## Requisitos não funcionais
 
@@ -107,7 +108,7 @@
 - **Limitação conhecida:** como o site é estático (GitHub Pages), o token da brapi é embutido no JavaScript publicado e pode ser visto por quem inspecionar o código do site. Ele não fica no repositório (vem de um *secret* do GitHub Actions no deploy), mas não há como escondê-lo sem um servidor próprio. O risco é alguém usar a cota gratuita do token.
 
 ### Qualidade
-- **62 testes automatizados** com Vitest, em 7 arquivos, cobrindo cálculos, ordenação, formatação, evolução do patrimônio e comparação com o Ibovespa, distribuição da rosca, exportação em CSV e a atualização automática.
+- **68 testes automatizados** com Vitest, em 8 arquivos, cobrindo cálculos, ordenação, formatação, importação de CSV, evolução do patrimônio e comparação com o Ibovespa, distribuição da rosca, exportação em CSV e a atualização automática.
 - Lint (Oxlint) sem erros nem avisos.
 
 ## Como acessar e usar
@@ -120,7 +121,7 @@
 2. Em **Meus ativos**, digite o código ou o nome da empresa (ex.: "PETR4" ou "Petrobras"), escolha uma sugestão, informe a quantidade e o preço médio e clique em **"Adicionar à carteira"**.
 3. Clique num ativo da lista para ver o gráfico dos últimos 3 meses.
 4. Em **Análises**, veja a evolução do patrimônio, a comparação com o Ibovespa e a rentabilidade de cada ativo.
-5. Na barra do topo: atualizar cotações, modo privacidade (olho), exportar CSV e trocar o tema.
+5. Na barra do topo: atualizar cotações, modo privacidade (olho), exportar e importar CSV e trocar o tema.
 
 ### Rodando localmente
 Requisitos: Node.js (versão LTS) e npm.
@@ -144,7 +145,7 @@ VITE_BRAPI_TOKEN=seu_token_aqui
 
 | Comando | O que faz |
 |---|---|
-| `npm test` | Roda os 62 testes automatizados (Vitest) |
+| `npm test` | Roda os 68 testes automatizados (Vitest) |
 | `npm run lint` | Roda o Oxlint |
 | `npm run build` | Gera a versão de produção na pasta `dist/` |
 | `npm run preview` | Serve a versão de produção em http://localhost:4173/vault/ |

@@ -1,14 +1,10 @@
 import { useRef, useState } from 'react'
 import { Plus } from 'lucide-react'
-import { criarAtivo } from '../utils/ativo.js'
+import { criarAtivo, FORMATO_TICKER } from '../utils/ativo.js'
 import { lerNumero } from '../utils/formatacao.js'
 import { buscarCotacao } from '../services/brapi.js'
 import CampoTicker from './CampoTicker.jsx'
 import './FormularioAtivo.css'
-
-// Formato de ticker da B3: 4 letras + 1 ou 2 números (+ "F" do mercado fracionário).
-// Ex: PETR4, VALE3, TAEE11, BOVA11, PETR4F
-const FORMATO_TICKER = /^[A-Z]{4}\d{1,2}F?$/
 
 const VALORES_INICIAIS = { ticker: '', quantidade: '', precoMedio: '' }
 

@@ -5,6 +5,7 @@ import Cabecalho from './Cabecalho.jsx'
 import BannerErro from './BannerErro.jsx'
 import AvisoExemplo from './AvisoExemplo.jsx'
 import Aviso from './Aviso.jsx'
+import DialogoImportacao from './DialogoImportacao.jsx'
 import Carregando from './Carregando.jsx'
 import { INTERVALO_ATUALIZACAO_MS } from '../hooks/useCarteira.js'
 import { formatarHorario } from '../utils/formatacao.js'
@@ -70,6 +71,7 @@ function Layout({ carteira, tema, aoAlternarTema, ocultarValores, aoAlternarPriv
           temAtivos={temAtivos}
           aoAtualizar={() => carteira.atualizarCotacoes({ ignorarCache: true })}
           aoExportar={carteira.exportarCarteira}
+          aoImportar={carteira.importarCsv}
           tema={tema}
           aoAlternarTema={aoAlternarTema}
           ocultarValores={ocultarValores}
@@ -107,6 +109,15 @@ function Layout({ carteira, tema, aoAlternarTema, ocultarValores, aoAlternarPriv
           <p>VAULT, trabalho de Desenvolvimento Web II do Grupo 5.</p>
         </footer>
       </div>
+
+      {carteira.importacao && (
+        <DialogoImportacao
+          importacao={carteira.importacao}
+          totalAtual={carteira.ativos.length}
+          aoConfirmar={carteira.confirmarImportacao}
+          aoFechar={carteira.fecharImportacao}
+        />
+      )}
 
       <Aviso aviso={carteira.aviso} aoFechar={carteira.fecharAviso} />
     </div>
